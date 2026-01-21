@@ -215,7 +215,7 @@ namespace Core.Tests
         [Description("При попытке установить минимальное значение," +
             " превышающее текущее максимальное значение, должно" +
                 " генерироваться исключение с информативным сообщением")]
-        public void SetMinValue_GreaterThanMaxValue_ShouldThrowArgumentException()
+        public void SetMinValue_GreaterThanMax_ShouldThrowArgumentException()
         {
             var parameter = new NumericalParameter(0, 100);
 
@@ -259,7 +259,7 @@ namespace Core.Tests
 
         [Test]
         [Description("Должна быть возможность корректного обновления" +
-            " только максимального значения, при этом минимальное значение " +
+            " только максимального значения, при этом минимальное значение "+
                 "и текущее значение (если оно в пределах " +
                     "нового диапазона) сохраняются")]
         public void SetMaxValue_ValidValue_ShouldUpdateMaxValue()
@@ -275,10 +275,10 @@ namespace Core.Tests
         }
 
         [Test]
-        [Description("При попытке установить максимальное значение, меньшее" +
+        [Description("При попытке установить максимальное значение, меньшее"+
             " текущего минимального значения, должно генерироваться" +
                 " исключение с информативным сообщением")]
-        public void SetMaxValue_LessThanMinValue_ShouldThrowArgumentException()
+        public void SetMaxValue_LessThanMin_ShouldThrowArgumentException()
         {
             var parameter = new NumericalParameter(0, 100);
 

@@ -61,7 +61,7 @@ namespace GlassPlugin.Tests
         [Test]
         [Description("Проверяет валидацию на некорректную" +
             " высоту средней части стакана")]
-        public void ValidateParametersFields_HeightTotalLowerThanHeightBotoomAndHeightUpperEdge_ShouldThrow()
+        public void ValidateParametersFields_TotalLowerHeightBottom()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -84,7 +84,7 @@ namespace GlassPlugin.Tests
 
         [Test]
         [Description("Проверяет валидацию отрицательной общей высоты")]
-        public void ValidateParametersFields_NegativeHeightTotal_ShouldThrow()
+        public void ValidateParametersFields_NegativeHeightTotal_Throw()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -176,7 +176,7 @@ namespace GlassPlugin.Tests
 
         [Test]
         [Description("Проверяет, что высота дна не может быть нулевой")]
-        public void ValidateParametersFields_ZeroHeightBottom_ShouldNotThrow()
+        public void ValidateParametersFields_ZeroHeightBottom_NotThrow()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -199,7 +199,7 @@ namespace GlassPlugin.Tests
 
         [Test]
         [Description("Проверяет валидацию нулевой толщины нижней стенки")]
-        public void ValidateParametersFields_ZeroThicknessLowerEdge_ShouldThrow()
+        public void ValidateParametersFields_ZeroThicknessLowerEdge()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -221,8 +221,9 @@ namespace GlassPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет валидацию отрицательной толщины нижней стенки")]
-        public void ValidateParametersFields_NegativeThicknessLowerEdge_ShouldThrow()
+        [Description("Проверяет валидацию отрицательной" +
+            " толщины нижней стенки")]
+        public void ValidateParametersFields_NegativeThicknessLowerEdge()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -244,8 +245,9 @@ namespace GlassPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет валидацию отрицательной толщины верхней стенки")]
-        public void ValidateParametersFields_NegativeThicknessUpperEdge_ShouldThrow()
+        [Description("Проверяет валидацию отрицательной" +
+            " толщины верхней стенки")]
+        public void ValidateParametersFields_NegativeThicknessUpperEdge()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -267,8 +269,9 @@ namespace GlassPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет валидацию отрицательной высоты верхней стенки")]
-        public void ValidateParametersFields_NegativeHeightUpperEdge_ShouldThrow()
+        [Description("Проверяет валидацию отрицательной " +
+            "высоты верхней стенки")]
+        public void ValidateParametersFields_NegativeHeightUpperEdge()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -379,7 +382,7 @@ namespace GlassPlugin.Tests
         [Test]
         [Description("Проверяет бизнес-правило: " +
             "толщина нижней стенки должна быть меньше радиуса")]
-        public void ValidateParametersFields_ThicknessLowerEdgeGreaterThanRadius_ShouldThrow()
+        public void ValidateParametersField_ThicknessLowerEdgeGreaterRadius()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -402,7 +405,7 @@ namespace GlassPlugin.Tests
         [Test]
         [Description("Проверяет бизнес-правило:" +
             " толщина верхней стенки должна быть меньше радиуса")]
-        public void ValidateParametersFields_ThicknessUpperEdgeGreaterThanRadius_ShouldThrow()
+        public void ValidateParameters_ThicknessUpperEdgeGreaterThanRadius()
         {
             var privateMethod = GetPrivateValidateMethod();
 
@@ -490,7 +493,7 @@ namespace GlassPlugin.Tests
         [Test]
         [Description("Проверяет дефолтное сообщение " +
             "при неизвестном типе исключения")]
-        public void GetDefaultMessage_WithInvalidEnumValue_ShouldReturnDefaultMessage()
+        public void GetDefaultMessage_InvalidEnumValue_ReturnDefaultMessage()
         {
             var methodInfo = typeof(FacetedGlassException)
                 .GetMethod("GetDefaultMessage",
@@ -514,7 +517,7 @@ namespace GlassPlugin.Tests
         [Test]
         [Description("Проверяет, что свойство ParameterValue " +
             "возвращает переданное значение")]
-        public void FacetedGlassException_ParameterValue_ShouldReturnCorrectValue()
+        public void FacetedGlassException_ParameterValue_ReturnCorrectValue()
         {
             var testValue = new { Test = "Value", Number = 123 };
             var exceptionType = FacetedGlassExceptionType.HeightTotalInvalid;

@@ -95,7 +95,7 @@ namespace Core.Tests
         [Test]
         [Description("Метод TryGetParameter должен возвращать true и" +
             " параметр для существующего типа параметра")]
-        public void TryGetParameter_ExistingParameter_ShouldReturnTrueAndParameter()
+        public void TryGetParameter_ExistingParameter_ShouldReturn()
         {
             var parameters = new Parameters();
 
@@ -146,7 +146,7 @@ namespace Core.Tests
         [Description("При установке зависимостей без указания" +
             " минимального коэффициента должен использоваться коэффициент" +
                 " по умолчанию (10% от максимального коэффициента)")]
-        public void SetDependencies_WithMinRatioZero_ShouldUseDefaultMinRatio()
+        public void SetDependencies_WithMinRatio_ShouldUseDefaultMinRatio()
         {
             var parameters = new Parameters();
             var independent = new NumericalParameter(100, 200);
@@ -162,7 +162,7 @@ namespace Core.Tests
         [Test]
         [Description("Метод SetDependencies должен генерировать исключение" +
             " при передаче null в качестве независимого параметра")]
-        public void SetDependencies_IndependentParameterNull_ShouldThrowArgumentNullException()
+        public void SetDependencies_IndependentNull_ShouldThrowArgumentNull()
         {
             var parameters = new Parameters();
             var dependent = new NumericalParameter(0, 100);
@@ -178,7 +178,7 @@ namespace Core.Tests
         [Test]
         [Description("Метод SetDependencies должен генерировать исключение" +
             " при передаче null в качестве зависимого параметра")]
-        public void SetDependencies_DependentParameterNull_ShouldThrowArgumentNullException()
+        public void SetDependencies_DependentNull_ShouldThrowArgumentNulln()
         {
             var parameters = new Parameters();
             var independent = new NumericalParameter(0, 100);
@@ -194,7 +194,7 @@ namespace Core.Tests
         [Test]
         [Description("Метод SetDependencies должен генерировать исключение" +
             " при нулевом максимальном коэффициенте")]
-        public void SetDependencies_MaxRatioZero_ShouldThrowArgumentException()
+        public void SetDependencies_MaxRatio_ShouldThrowArgumentException()
         {
             var parameters = new Parameters();
             var independent = new NumericalParameter(0, 100);
@@ -209,9 +209,9 @@ namespace Core.Tests
         }
 
         [Test]
-        [Description("Метод SetDependencies должен генерировать исключение " +
+        [Description("Метод SetDependencies должен генерировать исключение "+
             "при отрицательном максимальном коэффициенте")]
-        public void SetDependencies_MaxRatioNegative_ShouldThrowArgumentException()
+        public void SetDependencies_MaxRatioNegative_ShouldThrowArgument()
         {
             var parameters = new Parameters();
             var independent = new NumericalParameter(0, 100);
@@ -228,7 +228,7 @@ namespace Core.Tests
         [Test]
         [Description("Метод SetDependencies должен генерировать исключение" +
             " при отрицательном минимальном коэффициенте")]
-        public void SetDependencies_MinRatioNegative_ShouldThrowArgumentException()
+        public void SetDependencies_MinRatioNegative_ShouldThrowArgument()
         {
             var parameters = new Parameters();
             var independent = new NumericalParameter(0, 100);
@@ -247,7 +247,7 @@ namespace Core.Tests
         [Description("Метод SetDependencies должен генерировать " +
             "исключение, когда минимальный коэффициент " +
                 "превышает максимальный коэффициент")]
-        public void SetDependencies_MinRatioGreaterThanMaxRatio_ShouldThrowArgumentException()
+        public void SetDependencies_MinRatioGreaterThanMaxRatio()
         {
             var parameters = new Parameters();
             var independent = new NumericalParameter(0, 100);
@@ -281,7 +281,7 @@ namespace Core.Tests
         [Test]
         [Description("Метод SetDependencies должен корректно вычислять " +
             "диапазоны для различных значений независимого параметра")]
-        public void SetDependencies_ShouldWorkWithDifferentIndependentValues()
+        public void SetDependencies_ShouldWorkWithDifferentIndependentValue()
         {
             var parameters = new Parameters();
             var independent = new NumericalParameter(0, 1000);
