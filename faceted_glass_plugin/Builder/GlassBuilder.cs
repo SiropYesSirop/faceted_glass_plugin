@@ -27,8 +27,8 @@ namespace GlassPlugin
 
                 if (!_wrapper.TestConnection())
                 {
-                    throw new ArgumentException("Не удалось подключиться " +
-                        "к КОМПАС. "+"Убедитесь, что КОМПАС 3D установлен!");
+                    throw FacetedGlassException.Create(
+                        FacetedGlassExceptionType.KompasConnectionFailed);
                 }
 
                 _wrapper.ConnectCAD();
@@ -55,8 +55,8 @@ namespace GlassPlugin
                 int numberOfEdges = (int)parameters.NumericalParameters
                     [ParameterType.NumberOfEdge].Value;
 
-                ValidateParametersFields(heightTotal, externalRadius, 
-                    heightBottom, thicknessLowerEdge,thicknessUpperEdge, 
+                ValidateParametersFields(heightTotal, externalRadius,
+                    heightBottom, thicknessLowerEdge, thicknessUpperEdge,
                         heightUpperEdge, numberOfEdges);
 
                 _wrapper.CreateFacetedGlass(
@@ -76,7 +76,7 @@ namespace GlassPlugin
                 var tangentPlane = _wrapper.CreateTangentPlaneToCylinder
                     (cylinderRadius, planeAngle, planeHeight);
                 var rectangleSketch = _wrapper.CreateRectangleOnTangentPlane
-                    (tangentPlane,heightTotal - heightBottom - heightUpperEdge, 
+                    (tangentPlane, heightTotal - heightBottom - heightUpperEdge,
                         heightBottom, 0);
                 var singleEdge = _wrapper.CreateCutExtrusion
                     (rectangleSketch, true, 2, "ПерваяГрань");
@@ -99,67 +99,81 @@ namespace GlassPlugin
             }
         }
 
+        //TODO: user defined exception +
         /// <summary>
         /// Проверка параметров на валидность
         /// </summary>
         /// <param name="heightTotal">Общая высота стакана</param>
         /// <param name="externalRadius">Внешний радиус стакана</param>
         /// <param name="heightBottom">Высота дна стакана</param>
-        /// <param name="thicknessLowerEdge">Толщина нижней стенки стакана</param>
-        /// <param name="thicknessUpperEdge">Толщина верхней стенки стакана</param>
-        /// <param name="heightUpperEdge">Высота верхней кромки стакана</param>
+        /// <param name="thicknessLowerEdge">Толщина нижней 
+        /// стенки стакана</param>
+        /// <param name="thicknessUpperEdge">Толщина верхней
+        /// стенки стакана</param>
+        /// <param name="heightUpperEdge">Высота верхней
+        /// кромки стакана</param>
         /// <param name="numberOfEdges">Количество граней стакана</param>
-        private void ValidateParametersFields(double heightTotal, 
+        private void ValidateParametersFields(double heightTotal,
             double externalRadius, double heightBottom,
             double thicknessLowerEdge, double thicknessUpperEdge,
                        double heightUpperEdge, int numberOfEdges)
         {
-            if (heightTotal <= 0) throw new ArgumentException
-                ("Общая высота должна быть положительной");
+            if (heightTotal <= 0) throw FacetedGlassException.Create(
+                FacetedGlassExceptionType.HeightTotalInvalid,
+                    nameof(heightTotal), heightTotal);
 
-            if (externalRadius <= 0) throw new ArgumentException
-                ("Внешний радиус должен быть положительным");
+            if (externalRadius <= 0)
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.RadiusInvalid,
+                    nameof(externalRadius), externalRadius);
 
-            if (heightBottom <= 0) throw new ArgumentException
-                ("Высота дна не может быть меньше либо равна нулю!");
+            if (heightBottom <= 0)
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.HeightBottomInvalid,
+                    nameof(heightBottom), heightBottom);
 
-            if (thicknessLowerEdge <= 0) throw new ArgumentException
-                ("Толщина нижней стенки должна быть положительной");
+            if (thicknessLowerEdge <= 0)
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.ThicknessLowerEdgeInvalid,
+                    nameof(thicknessLowerEdge), thicknessLowerEdge);
 
-            if (thicknessUpperEdge <= 0) throw new ArgumentException
-                ("Высота верхней стенки не может быть меньше либо равна нулю!");
+            if (thicknessUpperEdge <= 0)
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.ThicknessUpperEdgeInvalid,
+                    nameof(thicknessUpperEdge), thicknessUpperEdge);
 
-            if (heightUpperEdge <= 0) throw new ArgumentException
-                ("Высота верхней стенки должна быть положительной");
+            if (heightUpperEdge <= 0)
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.HeightUpperEdgeInvalid,
+                    nameof(heightUpperEdge), heightUpperEdge);
 
-            if (numberOfEdges < 8) throw new ArgumentException
-                ("Количество граней должно быть не менее 8");
+            if (numberOfEdges < 8 || numberOfEdges > 11)
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.NumberOfEdgesInvalid,
+                    nameof(numberOfEdges), numberOfEdges);
 
-            if (numberOfEdges > 11) throw new ArgumentException
-                ("Количество граней не должно превышать 11");
-
-            if (heightTotal - heightUpperEdge - heightBottom <= 0) 
-                throw new ArgumentException
-                    ("Высота средней части стакана " +
-                        "не может быть меньше либо равна нулю!");
+            if (heightTotal - heightUpperEdge - heightBottom <= 0)
+                throw new ArgumentException(
+                    "Высота средней части стакана не может быть меньше" +
+                    " либо равна нулю!");
 
             if (thicknessLowerEdge >= externalRadius)
-                throw new ArgumentException ($"Толщина нижней " +
-                    $"стенки ({thicknessLowerEdge}) " + $"должна быть меньше" +
-                        $" внешнего радиуса ({externalRadius})");
+                throw new ArgumentException(
+                    $"Толщина нижней стенки ({thicknessLowerEdge}) должна " +
+                        $"быть меньше внешнего радиуса ({externalRadius})");
 
             if (thicknessUpperEdge >= externalRadius)
-                throw new ArgumentException
-                    ($"Толщина верхней стенки ({thicknessUpperEdge}) " +
-                        $"должна быть меньше внешнего радиуса " +
-                            $"({externalRadius})");
+                throw new ArgumentException(
+                    $"Толщина верхней стенки ({thicknessUpperEdge}) должна " +
+                        $"быть меньше внешнего радиуса ({externalRadius})");
         }
 
         /// <summary>
         /// Проверка параметров объекта Parameters
         /// </summary>
         /// <param name="parameters">Объект параметров для проверки</param>
-        /// <returns>Результат проверки параметров (true - параметры валидны)</returns>
+        /// <returns>Результат проверки параметров 
+        /// (true - параметры валидны)</returns>
         public bool ValidateParameters(Parameters parameters)
         {
             try
@@ -185,7 +199,7 @@ namespace GlassPlugin
                 int numberOfEdges = (int)parameters.NumericalParameters
                     [ParameterType.NumberOfEdge].Value;
 
-                ValidateParametersFields(heightTotal, externalRadius, 
+                ValidateParametersFields(heightTotal, externalRadius,
                     heightBottom, thicknessLowerEdge,
                     thicknessUpperEdge, heightUpperEdge, numberOfEdges);
 

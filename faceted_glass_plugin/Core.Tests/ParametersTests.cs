@@ -1,274 +1,333 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core;
 using FluentAssertions;
 using NUnit.Framework;
 
 namespace Core.Tests
 {
     [TestFixture]
-    [Category("Unit")]
-    [Category("Core")]
     public sealed class ParametersTests
     {
-        private const double Tolerance = 1e-10;
-
         [Test]
-        [Description(
-            "Проверяет, что конструктор Parameters создает все 7 параметров " +
-            "граненого стакана с корректными начальными значениями.")]
-        public void Constructor_ShouldInitializeAllGlassParameters()
+        [Description("Конструктор должен корректно инициализировать" +
+            " все числовые параметры с предопределенным набором типов")]
+        public void Constructor_ShouldInitializeAllParameters()
         {
             var parameters = new Parameters();
 
-            parameters.NumericalParameters.Should()
-                .HaveCount(7)
-                .And.ContainKeys(
-                    ParameterType.HeightTotal,
-                    ParameterType.Radius,
-                    ParameterType.HeightBottom,
-                    ParameterType.ThicknessLowerEdge,
-                    ParameterType.ThicknessUpperEdge,
-                    ParameterType.HeightUpperEdge,
-                    ParameterType.NumberOfEdge);
-
-            var heightTotal = parameters.NumericalParameters[ParameterType.HeightTotal];
-            heightTotal.MinValue.Should().Be(100);
-            heightTotal.MaxValue.Should().Be(150);
-
-            var radius = parameters.NumericalParameters[ParameterType.Radius];
-            radius.MinValue.Should().Be(45);
-            radius.MaxValue.Should().Be(60);
-
-            var heightBottom = parameters.NumericalParameters[ParameterType.HeightBottom];
-            heightBottom.MinValue.Should().Be(10);
-            heightBottom.MaxValue.Should().Be(25);
-
-            var thicknessLowerEdge = parameters.NumericalParameters[ParameterType.ThicknessLowerEdge];
-            thicknessLowerEdge.MinValue.Should().Be(2);
-            thicknessLowerEdge.MaxValue.Should().Be(5);
-
-            var thicknessUpperEdge = parameters.NumericalParameters[ParameterType.ThicknessUpperEdge];
-            thicknessUpperEdge.MinValue.Should().Be(4);
-            thicknessUpperEdge.MaxValue.Should().Be(7);
-
-            var heightUpperEdge = parameters.NumericalParameters[ParameterType.HeightUpperEdge];
-            heightUpperEdge.MinValue.Should().Be(20);
-            heightUpperEdge.MaxValue.Should().Be(40);
-
-            var numberOfEdge = parameters.NumericalParameters[ParameterType.NumberOfEdge];
-            numberOfEdge.MinValue.Should().Be(8);
-            numberOfEdge.MaxValue.Should().Be(11);
-        }
-
-        [Test]
-        [Description(
-            "Проверяет, что после создания Parameters все значения " +
-            "параметров равны 0 (не установлены).")]
-        public void Constructor_AllParameterValues_ShouldBeZeroInitially()
-        {
-            var parameters = new Parameters();
-            foreach (var kvp in parameters.NumericalParameters)
-            {
-                kvp.Value.Value.Should().Be(0.0,
-                    $"Parameter {kvp.Key} should have initial value 0");
-            }
-        }
-
-        [Test]
-        [Description(
-            "Проверяет, что SetDependenses корректно устанавливает " +
-            "MaxValue зависимого параметра на основе независимого.")]
-        public void SetDependenses_WithValidRatios_ShouldSetMaxValue()
-        {
-            var parameters = new Parameters();
-            var independ = parameters.NumericalParameters[ParameterType.HeightTotal];
-            var depend = parameters.NumericalParameters[ParameterType.HeightUpperEdge];
-            independ.Value = 120;
-            double maxratio = 0.5;
-            parameters.SetDependenses(independ, depend, maxratio);
-            depend.MaxValue.Should().BeApproximately(120 * maxratio, Tolerance);
-        }
-
-        [Test]
-        [Description(
-            "Проверяет, что SetDependenses с minratio устанавливает " +
-            "MinValue зависимого параметра.")]
-        public void SetDependenses_WithMinRatio_ShouldSetMinValue()
-        { 
-            var parameters = new Parameters();
-            var independ = parameters.NumericalParameters[ParameterType.HeightTotal];
-            var depend = parameters.NumericalParameters[ParameterType.HeightUpperEdge];
-            independ.Value = 120;
-            double maxratio = 0.5;
-            double minratio = 0.2;
-            parameters.SetDependenses(independ, depend, maxratio, minratio);
-            depend.MinValue.Should().BeApproximately(120 * minratio, Tolerance);
-        }
-
-        [Test]
-        [Description(
-            "Проверяет, что SetDependenses без minratio (0) " +
-            "устанавливает MinValue как 10% от MaxValue.")]
-        public void SetDependenses_WithoutMinRatio_ShouldSetMinAs10PercentOfMax()
-        {
-            var parameters = new Parameters();
-            var independ = parameters.NumericalParameters[ParameterType.ThicknessLowerEdge];
-            var depend = parameters.NumericalParameters[ParameterType.ThicknessUpperEdge];
-            independ.Value = 3;
-            double maxratio = 2.0;
-            parameters.SetDependenses(independ, depend, maxratio, minratio: 0);
-            double expectedMax = 3 * maxratio;
-            double expectedMin = expectedMax * 0.1;
-            depend.MaxValue.Should().BeApproximately(expectedMax, Tolerance);
-            depend.MinValue.Should().BeApproximately(expectedMin, Tolerance);
-        }
-
-        [Test]
-        [Description(
-            "Проверяет, что SetDependenses не изменяет текущее Value " +
-            "зависимого параметра, только MinValue и MaxValue.")]
-        public void SetDependenses_ShouldNotChangeCurrentValue()
-        {
-            var parameters = new Parameters();
-            var independ = parameters.NumericalParameters[ParameterType.HeightTotal];
-            var depend = parameters.NumericalParameters[ParameterType.HeightUpperEdge];
-            independ.Value = 120;
-            depend.Value = 30;
-            parameters.SetDependenses(independ, depend, maxratio: 0.5);
-            depend.Value.Should().Be(30);
-        }
-
-        [Test]
-        [Description(
-            "Проверяет, что после вызова SetDependenses можно установить " +
-            "Value зависимого параметра в новом диапазоне.")]
-        public void SetDependenses_AllowsSettingValueInNewRange()
-        {
-            var parameters = new Parameters();
-            var independ = parameters.NumericalParameters[ParameterType.HeightTotal];
-            var depend = parameters.NumericalParameters[ParameterType.HeightUpperEdge];
-
-            independ.Value = 100;
-            parameters.SetDependenses(independ, depend, maxratio: 0.5, minratio: 0.2);
-
-            depend.Value = 35;
-            depend.Value.Should().Be(35);
-
-            Action setToMin = () => depend.Value = 20;
-            setToMin.Should().NotThrow();
-
-            Action setToMax = () => depend.Value = 50;
-            setToMax.Should().NotThrow();
-        }
-
-        [Test]
-        [Description(
-            "Проверяет, что после вызова SetDependenses нельзя установить " +
-            "Value зависимого параметра вне нового диапазона.")]
-        public void SetDependenses_RejectsValueOutsideNewRange()
-        {
-            var parameters = new Parameters();
-            var independ = parameters.NumericalParameters[ParameterType.HeightTotal];
-            var depend = parameters.NumericalParameters[ParameterType.HeightUpperEdge];
-
-            independ.Value = 100;
-            parameters.SetDependenses(independ, depend, maxratio: 0.5, minratio: 0.2);
-
-            Action setBelowMin = () => depend.Value = 19.999;
-            setBelowMin.Should().Throw<ArgumentException>();
-
-            Action setAboveMax = () => depend.Value = 50.001;
-            setAboveMax.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        [Description(
-            "Проверяет реальный сценарий использования: установка высоты " +
-            "стакана влияет на допустимую высоту верхней грани.")]
-        public void RealScenario_HeightTotalAffectsHeightUpperEdge()
-        {
-            var parameters = new Parameters();
-
-            parameters.NumericalParameters[ParameterType.HeightTotal].Value = 120;
-
-            parameters.SetDependenses(
-                parameters.NumericalParameters[ParameterType.HeightTotal],
-                parameters.NumericalParameters[ParameterType.HeightUpperEdge],
-                maxratio: 0.5,
-                minratio: 0.2);
-
-            var heightUpperEdge = parameters.NumericalParameters[ParameterType.HeightUpperEdge];
-            heightUpperEdge.MinValue.Should().BeApproximately(24, Tolerance);
-            heightUpperEdge.MaxValue.Should().BeApproximately(60, Tolerance);
-
-            heightUpperEdge.Value = 40;
-            heightUpperEdge.Value.Should().Be(40);
-
-            Action invalidAction = () => heightUpperEdge.Value = 70;
-            invalidAction.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        [Description(
-            "Проверяет цепочку зависимостей: толщина нижней грани влияет " +
-            "на толщину верхней грани.")]
-        public void RealScenario_ThicknessLowerEdgeAffectsThicknessUpperEdge()
-        {
-            var parameters = new Parameters();
-
-            parameters.NumericalParameters[ParameterType.ThicknessLowerEdge].Value = 3;
-
-            parameters.SetDependenses(
-                parameters.NumericalParameters[ParameterType.ThicknessLowerEdge],
-                parameters.NumericalParameters[ParameterType.ThicknessUpperEdge],
-                maxratio: 2.0,
-                minratio: 1.4);
-
-            var thicknessUpperEdge = parameters.NumericalParameters[ParameterType.ThicknessUpperEdge];
-            thicknessUpperEdge.MinValue.Should().BeApproximately(4.2, Tolerance);
-            thicknessUpperEdge.MaxValue.Should().BeApproximately(6.0, Tolerance);
-        }
-
-        [Test]
-        [Description(
-            "Проверяет, что NumericalParameters возвращает защищенную копию " +
-            "или оригинальную, но неизменяемую коллекцию.")]
-        public void NumericalParameters_ShouldNotAllowDirectModificationOfDictionary()
-        {
-            var parameters = new Parameters();
             parameters.NumericalParameters.Should().NotBeNull();
             parameters.NumericalParameters.Count.Should().Be(7);
+
+            parameters.NumericalParameters.Should().ContainKey
+                (ParameterType.HeightTotal);
+            parameters.NumericalParameters.Should().ContainKey
+                (ParameterType.Radius);
+            parameters.NumericalParameters.Should().ContainKey
+                (ParameterType.HeightBottom);
+            parameters.NumericalParameters.Should().ContainKey
+                (ParameterType.ThicknessLowerEdge);
+            parameters.NumericalParameters.Should().ContainKey
+                (ParameterType.ThicknessUpperEdge);
+            parameters.NumericalParameters.Should().ContainKey
+                (ParameterType.HeightUpperEdge);
+            parameters.NumericalParameters.Should().ContainKey
+                (ParameterType.NumberOfEdge);
         }
 
         [Test]
-        [Description(
-            "Проверяет, что можно получить доступ к параметрам по их типу " +
-            "и установить им значения.")]
-        public void NumericalParameters_CanAccessAndSetParameterValues()
+        [Description("Все инициализированные параметры должны иметь" +
+            " корректные диапазоны значений, соответствующие требованиям " +
+                "предметной области")]
+        public void Constructor_ParametersShouldHaveCorrectRanges()
         {
             var parameters = new Parameters();
 
-            parameters.NumericalParameters[ParameterType.HeightTotal].Value = 125;
-            parameters.NumericalParameters[ParameterType.Radius].Value = 50;
-            parameters.NumericalParameters[ParameterType.HeightBottom].Value = 15;
+            parameters.GetParameter(ParameterType.HeightTotal)
+                .MinValue.Should().Be(100);
+            parameters.GetParameter(ParameterType.HeightTotal)
+                .MaxValue.Should().Be(150);
 
-            parameters.NumericalParameters[ParameterType.HeightTotal].Value.Should().Be(125);
-            parameters.NumericalParameters[ParameterType.Radius].Value.Should().Be(50);
-            parameters.NumericalParameters[ParameterType.HeightBottom].Value.Should().Be(15);
+            parameters.GetParameter(ParameterType.Radius)
+                .MinValue.Should().Be(45);
+            parameters.GetParameter(ParameterType.Radius)
+                .MaxValue.Should().Be(60);
+
+            parameters.GetParameter(ParameterType.HeightBottom)
+                .MinValue.Should().Be(10);
+            parameters.GetParameter(ParameterType.HeightBottom)
+                .MaxValue.Should().Be(25);
+
+            parameters.GetParameter(ParameterType.ThicknessLowerEdge)
+                .MinValue.Should().Be(2);
+            parameters.GetParameter(ParameterType.ThicknessLowerEdge)
+                .MaxValue.Should().Be(5);
+
+            parameters.GetParameter(ParameterType.ThicknessUpperEdge)
+                .MinValue.Should().Be(4);
+            parameters.GetParameter(ParameterType.ThicknessUpperEdge)
+                .MaxValue.Should().Be(7);
+
+            parameters.GetParameter(ParameterType.HeightUpperEdge)
+                .MinValue.Should().Be(20);
+            parameters.GetParameter(ParameterType.HeightUpperEdge)
+                .MaxValue.Should().Be(40);
+
+            parameters.GetParameter(ParameterType.NumberOfEdge)
+                .MinValue.Should().Be(8);
+            parameters.GetParameter(ParameterType.NumberOfEdge)
+                .MaxValue.Should().Be(11);
         }
 
         [Test]
-        [Description(
-            "Проверяет, что при попытке доступа к несуществующему параметру " +
-            "по ключу выбрасывается исключение.")]
-        public void NumericalParameters_AccessByInvalidKey_ShouldThrowKeyNotFoundException()
+        [Description("Метод GetParameter должен возвращать " +
+            "существующий параметр по его типу")]
+        public void GetParameter_ExistingParameter_ShouldReturnParameter()
         {
             var parameters = new Parameters();
-            var invalidParameterType = (ParameterType)999;
 
-            Action act = () => { var param = parameters.NumericalParameters[invalidParameterType]; };
-            act.Should().Throw<KeyNotFoundException>();
+            var param = parameters.GetParameter(ParameterType.HeightTotal);
+
+            param.Should().NotBeNull();
+            param.MinValue.Should().Be(100);
+            param.MaxValue.Should().Be(150);
+        }
+
+        [Test]
+        [Description("Метод TryGetParameter должен возвращать true и" +
+            " параметр для существующего типа параметра")]
+        public void TryGetParameter_ExistingParameter_ShouldReturnTrueAndParameter()
+        {
+            var parameters = new Parameters();
+
+            var success = parameters.TryGetParameter
+                (ParameterType.Radius, out var param);
+
+            success.Should().BeTrue();
+            param.Should().NotBeNull();
+            param.MinValue.Should().Be(45);
+            param.MaxValue.Should().Be(60);
+        }
+
+        [Test]
+        [Description("Метод TryGetParameter должен возвращать false и " +
+            "null для несуществующего типа параметра")]
+        public void TryGetParameter_NonExistentParameter_ShouldReturnFalse()
+        {
+            var parameters = new Parameters();
+
+            var dict = parameters.NumericalParameters;
+            dict.Remove(ParameterType.Radius);
+
+            var success = parameters.TryGetParameter(ParameterType.Radius,
+                out var param);
+
+            success.Should().BeFalse();
+            param.Should().BeNull();
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен устанавливать зависимые" +
+            " диапазоны для параметра на основе независимого параметра и" +
+                " заданных коэффициентов")]
+        public void SetDependencies_ValidParameters_ShouldSetCorrectRange()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(100, 200);
+            independent.Value = 150;
+            var dependent = new NumericalParameter(0, 100);
+
+            parameters.SetDependencies(independent, dependent, 0.5, 0.2);
+
+            dependent.MinValue.Should().Be(30);
+            dependent.MaxValue.Should().Be(75);
+        }
+
+        [Test]
+        [Description("При установке зависимостей без указания" +
+            " минимального коэффициента должен использоваться коэффициент" +
+                " по умолчанию (10% от максимального коэффициента)")]
+        public void SetDependencies_WithMinRatioZero_ShouldUseDefaultMinRatio()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(100, 200);
+            independent.Value = 200;
+            var dependent = new NumericalParameter(0, 100);
+
+            parameters.SetDependencies(independent, dependent, 0.4);
+
+            dependent.MinValue.Should().Be(8);
+            dependent.MaxValue.Should().Be(80);
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен генерировать исключение" +
+            " при передаче null в качестве независимого параметра")]
+        public void SetDependencies_IndependentParameterNull_ShouldThrowArgumentNullException()
+        {
+            var parameters = new Parameters();
+            var dependent = new NumericalParameter(0, 100);
+
+            Action action = () => parameters.SetDependencies(null,
+                dependent, 0.5);
+
+            action.Should()
+                .Throw<ArgumentNullException>()
+                .WithMessage("*independentParameter*");
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен генерировать исключение" +
+            " при передаче null в качестве зависимого параметра")]
+        public void SetDependencies_DependentParameterNull_ShouldThrowArgumentNullException()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(0, 100);
+
+            Action action = () => parameters.SetDependencies(independent,
+                null, 0.5);
+
+            action.Should()
+                .Throw<ArgumentNullException>()
+                .WithMessage("*dependentParameter*");
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен генерировать исключение" +
+            " при нулевом максимальном коэффициенте")]
+        public void SetDependencies_MaxRatioZero_ShouldThrowArgumentException()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(0, 100);
+            var dependent = new NumericalParameter(0, 100);
+
+            Action action = () => parameters.SetDependencies(independent,
+                dependent, 0);
+
+            action.Should()
+                .Throw<ArgumentException>()
+                .WithMessage("Коэффициент maxRatio должен быть больше 0*");
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен генерировать исключение " +
+            "при отрицательном максимальном коэффициенте")]
+        public void SetDependencies_MaxRatioNegative_ShouldThrowArgumentException()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(0, 100);
+            var dependent = new NumericalParameter(0, 100);
+
+            Action action = () => parameters.SetDependencies(independent,
+                dependent, -0.5);
+
+            action.Should()
+                .Throw<ArgumentException>()
+                .WithMessage("Коэффициент maxRatio должен быть больше 0*");
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен генерировать исключение" +
+            " при отрицательном минимальном коэффициенте")]
+        public void SetDependencies_MinRatioNegative_ShouldThrowArgumentException()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(0, 100);
+            var dependent = new NumericalParameter(0, 100);
+
+            Action action = () => parameters.SetDependencies(independent,
+                dependent, 0.5, -0.1);
+
+            action.Should()
+                .Throw<ArgumentException>()
+                .WithMessage("Коэффициент minRatio не может " +
+                    "быть отрицательным*");
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен генерировать " +
+            "исключение, когда минимальный коэффициент " +
+                "превышает максимальный коэффициент")]
+        public void SetDependencies_MinRatioGreaterThanMaxRatio_ShouldThrowArgumentException()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(0, 100);
+            var dependent = new NumericalParameter(0, 100);
+
+            Action action = () => parameters.SetDependencies(independent,
+                dependent, 0.5, 0.6);
+
+            action.Should()
+                .Throw<ArgumentException>()
+                .WithMessage("minRatio не может быть больше maxRatio");
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен корректно работать," +
+            " когда минимальный коэффициент равен максимальному " +
+                "коэффициенту (диапазон вырождается в точку)")]
+        public void SetDependencies_MinRatioEqualToMaxRatio_ShouldWork()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(100, 200);
+            independent.Value = 150;
+            var dependent = new NumericalParameter(0, 100);
+
+            parameters.SetDependencies(independent, dependent, 0.5, 0.5);
+
+            dependent.MinValue.Should().Be(75);
+            dependent.MaxValue.Should().Be(75);
+        }
+
+        [Test]
+        [Description("Метод SetDependencies должен корректно вычислять " +
+            "диапазоны для различных значений независимого параметра")]
+        public void SetDependencies_ShouldWorkWithDifferentIndependentValues()
+        {
+            var parameters = new Parameters();
+            var independent = new NumericalParameter(0, 1000);
+            var dependent = new NumericalParameter(0, 100);
+
+            independent.Value = 500;
+            parameters.SetDependencies(independent, dependent, 0.2, 0.1);
+            dependent.MinValue.Should().Be(50);
+            dependent.MaxValue.Should().Be(100);
+
+            independent.Value = 100;
+            parameters.SetDependencies(independent, dependent, 0.5, 0.3);
+            dependent.MinValue.Should().Be(30);
+            dependent.MaxValue.Should().Be(50);
+        }
+
+        [Test]
+        [Description("Свойство NumericalParameters должно позволять" +
+            " установку нового словаря параметров")]
+        public void NumericalParameters_Property_ShouldBeSettable()
+        {
+            var parameters = new Parameters();
+            var newDictionary = new Dictionary<ParameterType,
+                NumericalParameter>
+            {
+                [ParameterType.HeightTotal] = new NumericalParameter(1, 2)
+            };
+
+            parameters.NumericalParameters = newDictionary;
+
+            parameters.NumericalParameters.Should().BeSameAs(newDictionary);
+            parameters.NumericalParameters[ParameterType.HeightTotal]
+                .MinValue.Should().Be(1);
+        }
+
+        [Test]
+        [Description("Свойство NumericalParameters должно быть доступно" +
+            " для чтения и возвращать корректный словарь параметров")]
+        public void NumericalParameters_Property_ShouldBeGettable()
+        {
+            var parameters = new Parameters();
+
+            var dict = parameters.NumericalParameters;
+
+            dict.Should().NotBeNull();
+            dict.Should().HaveCount(7);
         }
     }
 }

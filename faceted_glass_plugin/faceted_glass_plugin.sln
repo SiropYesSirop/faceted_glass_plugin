@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36603.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "faceted_glass_plugin", "faceted_glass_plugin\faceted_glass_plugin.csproj", "{4BBF0E96-7C09-4113-A5F3-767902D5BB77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacetedGlassPlugin", "faceted_glass_plugin\FacetedGlassPlugin.csproj", "{4BBF0E96-7C09-4113-A5F3-767902D5BB77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderFacetedGlass", "Builder\BuilderFacetedGlass.csproj", "{97C83FCC-80D5-4609-BC32-F597909206E1}"
 EndProject

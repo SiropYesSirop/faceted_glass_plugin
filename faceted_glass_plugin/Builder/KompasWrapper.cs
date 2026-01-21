@@ -11,7 +11,8 @@ namespace Builder
     /// Обертка для работы с API КОМПАС-3D
     /// </summary>
     /// <remarks>
-    /// Класс предоставляет методы для создания и редактирования 3D-деталей в КОМПАС-3D
+    /// Класс предоставляет методы для создания и
+    /// редактирования 3D-деталей в КОМПАС-3D
     /// </remarks>
     public class KompasWrapper
     {
@@ -52,15 +53,18 @@ namespace Builder
                 }
                 try
                 {
-                    _kompas = (KompasObject)Marshal.GetActiveObject("KOMPAS.Application.5");
+                    _kompas = (KompasObject)Marshal.GetActiveObject
+                        ("KOMPAS.Application.5");
                 }
                 catch (COMException)
                 {
-                    var kompasType = Type.GetTypeFromProgID("KOMPAS.Application.5");
+                    var kompasType = Type.GetTypeFromProgID
+                        ("KOMPAS.Application.5");
                     if (kompasType == null)
                         return false;
 
-                    _kompas = (KompasObject)Activator.CreateInstance(kompasType);
+                    _kompas = (KompasObject)Activator.
+                        CreateInstance(kompasType);
                 }
 
                 if (_kompas == null)
@@ -91,7 +95,8 @@ namespace Builder
                 _document3D = (ksDocument3D)_kompas.Document3D();
                 _document3D.Create();
                 _document3D = (ksDocument3D)_kompas.ActiveDocument3D();
-                _part = (ksPart)_document3D.GetPart((short)Part_Type.pTop_Part);
+                _part = (ksPart)_document3D.GetPart
+                    ((short)Part_Type.pTop_Part);
                 return true;
             }
             catch
@@ -126,7 +131,8 @@ namespace Builder
             try
             {
                 var plane = (ksEntity)_part.GetDefaultEntity(planeType);
-                var sketch = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_sketch);
+                var sketch = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_sketch);
                 var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
                 sketchDef.SetPlane(plane);
                 sketch.Create();
@@ -144,20 +150,25 @@ namespace Builder
         /// <param name="basePlaneType">Базовый тип плоскости</param>
         /// <param name="offset">Смещение плоскости от базовой</param>
         /// <returns>Созданный эскиз или null в случае ошибки</returns>
-        public ksEntity CreateSketchOnOffsetPlane(short basePlaneType, double offset)
+        public ksEntity CreateSketchOnOffsetPlane(short basePlaneType,
+            double offset)
         {
             try
             {
-                var basePlane = (ksEntity)_part.GetDefaultEntity(basePlaneType);
+                var basePlane = (ksEntity)_part.GetDefaultEntity
+                    (basePlaneType);
 
-                var offsetPlane = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_planeOffset);
-                var offsetDef = (ksPlaneOffsetDefinition)offsetPlane.GetDefinition();
+                var offsetPlane = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_planeOffset);
+                var offsetDef = (ksPlaneOffsetDefinition)offsetPlane.
+                    GetDefinition();
                 offsetDef.SetPlane(basePlane);
                 offsetDef.direction = true;
                 offsetDef.offset = offset;
                 offsetPlane.Create();
 
-                var sketch = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_sketch);
+                var sketch = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_sketch);
                 var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
                 sketchDef.SetPlane(offsetPlane);
                 sketch.Create();
@@ -190,7 +201,8 @@ namespace Builder
         /// <summary>
         /// Завершает редактирование эскиза
         /// </summary>
-        /// <param name="sketch">Эскиз, редактирование которого завершается</param>
+        /// <param name="sketch">Эскиз, редактирование 
+        /// которого завершается</param>
         public void EndSketchEdit(ksEntity sketch)
         {
             try
@@ -209,7 +221,8 @@ namespace Builder
         /// <param name="centerY">Координата Y центра окружности</param>
         /// <param name="radius">Радиус окружности</param>
         /// <param name="style">Стиль линии</param>
-        public void DrawCircle(ksDocument2D doc2D, double centerX, double centerY, double radius, int style = 1)
+        public void DrawCircle(ksDocument2D doc2D, double centerX,
+            double centerY, double radius, int style = 1)
         {
             try
             {
@@ -222,19 +235,25 @@ namespace Builder
         /// Создает операцию выдавливания
         /// </summary>
         /// <param name="sketch">Эскиз для выдавливания</param>
-        /// <param name="direction">Направление выдавливания (true - прямое)</param>
+        /// <param name="direction">Направление выдавливания 
+        /// (true - прямое)</param>
         /// <param name="depth">Глубина выдавливания</param>
         /// <param name="name">Имя операции</param>
-        /// <returns>Созданная операция выдавливания или null в случае ошибки</returns>
-        public ksEntity CreateExtrusion(ksEntity sketch, bool direction, double depth, string name = "")
+        /// <returns>Созданная операция выдавливания или 
+        /// null в случае ошибки</returns>
+        public ksEntity CreateExtrusion(ksEntity sketch, bool direction,
+            double depth, string name = "")
         {
             try
             {
-                var extrude = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_baseExtrusion);
-                var extrudeDef = (ksBaseExtrusionDefinition)extrude.GetDefinition();
+                var extrude = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_baseExtrusion);
+                var extrudeDef = (ksBaseExtrusionDefinition)extrude.
+                    GetDefinition();
                 extrudeDef.directionType = (short)Direction_Type.dtNormal;
                 extrudeDef.SetSketch(sketch);
-                extrudeDef.SetSideParam(direction, (short)End_Type.etBlind, depth, 0, false);
+                extrudeDef.SetSideParam(direction,
+                    (short)End_Type.etBlind, depth, 0, false);
                 extrudeDef.SetThinParam(false, 0, 0, 0);
                 extrude.Create();
 
@@ -260,20 +279,25 @@ namespace Builder
         /// Создает операцию вырезания выдавливанием
         /// </summary>
         /// <param name="sketch">Эскиз для вырезания</param>
-        /// <param name="direction">Направление вырезания (true - прямое)</param>
+        /// <param name="direction">Направление вырезания 
+        /// (true - прямое)</param>
         /// <param name="depth">Глубина вырезания</param>
         /// <param name="name">Имя операции</param>
-        /// <returns>Созданная операция вырезания или null в случае ошибки</returns>
-        public ksEntity CreateCutExtrusion(ksEntity sketch, bool direction, double depth, string name = "")
+        /// <returns>Созданная операция вырезания или 
+        /// null в случае ошибки</returns>
+        public ksEntity CreateCutExtrusion(ksEntity sketch, bool direction,
+            double depth, string name = "")
         {
             try
             {
-                var cut = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_cutExtrusion);
+                var cut = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_cutExtrusion);
                 var cutDef = (ksCutExtrusionDefinition)cut.GetDefinition();
 
                 cutDef.directionType = (short)Direction_Type.dtNormal;
                 cutDef.SetSketch(sketch);
-                cutDef.SetSideParam(direction, (short)End_Type.etBlind, depth, 0, false);
+                cutDef.SetSideParam(direction,
+                    (short)End_Type.etBlind, depth, 0, false);
                 cutDef.SetThinParam(false, 0, 0, 0);
                 cut.Create();
 
@@ -303,7 +327,8 @@ namespace Builder
         /// <param name="height">Высота цилиндра</param>
         /// <param name="offsetZ">Смещение по оси Z</param>
         /// <returns>Успешность создания цилиндра</returns>
-        public bool CreateCylinder(string name, double radius, double height, double offsetZ = 0)
+        public bool CreateCylinder(string name, double radius,
+            double height, double offsetZ = 0)
         {
             try
             {
@@ -314,7 +339,8 @@ namespace Builder
                 }
                 else
                 {
-                    sketch = CreateSketchOnOffsetPlane((short)Obj3dType.o3d_planeXOY, offsetZ);
+                    sketch = CreateSketchOnOffsetPlane((short)
+                        Obj3dType.o3d_planeXOY, offsetZ);
                 }
 
                 if (sketch == null)
@@ -353,7 +379,8 @@ namespace Builder
         /// <param name="cutHeight">Высота вырезаемой части</param>
         /// <param name="startOffsetZ">Начальная высота вырезания</param>
         /// <returns>Успешность создания полости</returns>
-        public bool CutInternalCavity(string name, double internalRadius, double cutHeight, double startOffsetZ)
+        public bool CutInternalCavity(string name, double internalRadius,
+            double cutHeight, double startOffsetZ)
         {
             try
             {
@@ -368,7 +395,8 @@ namespace Builder
                     return false;
                 }
 
-                var sketch = CreateSketchOnOffsetPlane((short)Obj3dType.o3d_planeXOY, startOffsetZ);
+                var sketch = CreateSketchOnOffsetPlane
+                    ((short)Obj3dType.o3d_planeXOY, startOffsetZ);
                 if (sketch == null)
                 {
                     return false;
@@ -399,33 +427,43 @@ namespace Builder
         /// <summary>
         /// Создает полый стакан (внешняя оболочка + внутренняя полость)
         /// </summary>
-        /// <param name="externalRadiusLower">Внешний радиус нижней части</param>
-        /// <param name="externalRadiusUpper">Внешний радиус верхней части</param>
-        /// <param name="internalRadiusLower">Внутренний радиус нижней части</param>
-        /// <param name="internalRadiusUpper">Внутренний радиус верхней части</param>
+        /// <param name="externalRadiusLower">Внешний радиус
+        /// нижней части</param>
+        /// <param name="externalRadiusUpper">Внешний радиус
+        /// верхней части</param>
+        /// <param name="internalRadiusLower">Внутренний радиус
+        /// нижней части</param>
+        /// <param name="internalRadiusUpper">Внутренний радиус
+        /// верхней части</param>
         /// <param name="heightBottom">Высота дна</param>
         /// <param name="heightMiddle">Высота средней части</param>
         /// <param name="heightUpper">Высота верхней части</param>
         /// <returns>Успешность создания стакана</returns>
-        public bool CreateHollowGlass(double externalRadiusLower, double externalRadiusUpper,
-                                    double internalRadiusLower, double internalRadiusUpper,
-                                    double heightBottom, double heightMiddle, double heightUpper)
+        public bool CreateHollowGlass(double externalRadiusLower,
+            double externalRadiusUpper, double internalRadiusLower,
+                double internalRadiusUpper, double heightBottom,
+                double heightMiddle, double heightUpper)
         {
             try
             {
-                bool lowerSuccess = CreateCylinder("ВнешнийНижний", externalRadiusLower, heightBottom, 0);
+                bool lowerSuccess = CreateCylinder("ВнешнийНижний",
+                    externalRadiusLower, heightBottom, 0);
                 if (!lowerSuccess) return false;
 
-                bool middleSuccess = CreateCylinder("ВнешнийСредний", externalRadiusLower, heightMiddle, heightBottom);
+                bool middleSuccess = CreateCylinder("ВнешнийСредний",
+                    externalRadiusLower, heightMiddle, heightBottom);
                 if (!middleSuccess) return false;
 
                 double upperOffset = heightBottom + heightMiddle;
-                bool upperSuccess = CreateCylinder("ВнешнийВерхний", externalRadiusUpper, heightUpper, upperOffset);
+                bool upperSuccess = CreateCylinder("ВнешнийВерхний",
+                    externalRadiusUpper, heightUpper, upperOffset);
                 if (!upperSuccess) return false;
 
-                double upperCutOffset = heightBottom + heightMiddle + heightUpper;
-                bool upperCutSuccess = CutInternalCavity("ПолостьОбщая", internalRadiusUpper,
-                                                       heightMiddle + heightUpper, upperCutOffset);
+                double upperCutOffset = heightBottom + heightMiddle
+                    + heightUpper;
+                bool upperCutSuccess = CutInternalCavity("ПолостьОбщая",
+                    internalRadiusUpper, heightMiddle + heightUpper,
+                        upperCutOffset);
                 if (!upperCutSuccess) return false;
                 return true;
             }
@@ -444,7 +482,8 @@ namespace Builder
         /// <param name="x2">Координата X конечной точки</param>
         /// <param name="y2">Координата Y конечной точки</param>
         /// <param name="style">Стиль линии</param>
-        private void DrawLineSeg(ksDocument2D doc2D, double x1, double y1, double x2, double y2, int style = 1)
+        private void DrawLineSeg(ksDocument2D doc2D, double x1, double y1,
+            double x2, double y2, int style = 1)
         {
             try
             {
@@ -463,34 +502,42 @@ namespace Builder
         /// <param name="thicknessUpperEdge">Толщина верхней грани</param>
         /// <param name="heightUpperEdge">Высота верхней грани</param>
         /// <param name="numberOfEdges">Количество граней</param>
-        public void CreateFacetedGlass(double heightTotal, double externalRadius, double heightBottom,
-                                      double thicknessLowerEdge, double thicknessUpperEdge,
-                                      double heightUpperEdge, int numberOfEdges)
+        public void CreateFacetedGlass(double heightTotal,
+            double externalRadius, double heightBottom,
+                double thicknessLowerEdge, double thicknessUpperEdge,
+                    double heightUpperEdge, int numberOfEdges)
         {
             try
             {
-                double internalRadiusUpper = externalRadius - thicknessUpperEdge - thicknessLowerEdge;
+                double internalRadiusUpper = externalRadius -
+                    thicknessUpperEdge - thicknessLowerEdge;
                 if (internalRadiusUpper <= 0)
                 {
-                    throw new ArgumentException($"Внутренний радиус верхнего цилиндра отрицательный: {internalRadiusUpper} мм");
+                    throw new ArgumentException($"Внутренний радиус верхнего" +
+                        $" цилиндра отрицательный: {internalRadiusUpper} мм");
                 }
 
-                double externalRadiusLower = externalRadius - thicknessUpperEdge;
-                double internalRadiusLower = externalRadiusLower - thicknessLowerEdge;
+                double externalRadiusLower = externalRadius -
+                    thicknessUpperEdge;
+                double internalRadiusLower = externalRadiusLower -
+                    thicknessLowerEdge;
                 if (internalRadiusLower <= 0)
                 {
-                    throw new ArgumentException($"Внутренний радиус нижнего цилиндра отрицательный: {internalRadiusLower} мм");
+                    throw new ArgumentException($"Внутренний радиус нижнего " +
+                        $"цилиндра отрицательный: {internalRadiusLower} мм");
                 }
 
-                double heightMiddle = heightTotal - heightBottom - heightUpperEdge;
+                double heightMiddle = heightTotal - heightBottom -
+                    heightUpperEdge;
                 if (heightMiddle <= 0)
                 {
-                    throw new ArgumentException($"Средняя часть стакана имеет отрицательную высоту: {heightMiddle} мм");
+                    throw new ArgumentException($"Средняя часть стакана " +
+                        $"имеет отрицательную высоту: {heightMiddle} мм");
                 }
 
-                bool glassSuccess = CreateHollowGlass(externalRadiusLower, externalRadius,
-                                                    internalRadiusLower, internalRadiusUpper,
-                                                    heightBottom, heightMiddle, heightUpperEdge);
+                bool glassSuccess = CreateHollowGlass(externalRadiusLower,
+                    externalRadius, internalRadiusLower, internalRadiusUpper,
+                    heightBottom, heightMiddle, heightUpperEdge);
 
                 if (!glassSuccess)
                 {
@@ -507,19 +554,26 @@ namespace Builder
         /// Создает касательную плоскость к цилиндрической поверхности
         /// </summary>
         /// <param name="cylinderRadius">Радиус цилиндра</param>
-        /// <param name="angleDegrees">Угол положения плоскости вокруг оси Z (0° = по оси X)</param>
-        /// <param name="heightOffset">Высота плоскости от плоскости XOY</param>
+        /// <param name="angleDegrees">Угол положения плоскости 
+        /// вокруг оси Z (0° = по оси X)</param>
+        /// <param name="heightOffset">Высота плоскости от 
+        /// плоскости XOY</param>
         /// <returns>Касательная плоскость или null в случае ошибки</returns>
-        public ksEntity CreateTangentPlaneToCylinder(double cylinderRadius, double angleDegrees = 0, double heightOffset = 0)
+        public ksEntity CreateTangentPlaneToCylinder(double cylinderRadius,
+            double angleDegrees = 0, double heightOffset = 0)
         {
             try
-            {     
-                var basePlane = (ksEntity)_part.GetDefaultEntity((short)Obj3dType.o3d_planeYOZ);
-                var anglePlane = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_planeAngle);
-                var angleDef = (ksPlaneAngleDefinition)anglePlane.GetDefinition();
+            {
+                var basePlane = (ksEntity)_part.GetDefaultEntity
+                    ((short)Obj3dType.o3d_planeYOZ);
+                var anglePlane = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_planeAngle);
+                var angleDef = (ksPlaneAngleDefinition)
+                    anglePlane.GetDefinition();
 
                 angleDef.SetPlane(basePlane);
-                var axisZ = (ksEntity)_part.GetDefaultEntity((short)Obj3dType.o3d_axisOZ);
+                var axisZ = (ksEntity)_part.GetDefaultEntity
+                    ((short)Obj3dType.o3d_axisOZ);
                 angleDef.SetAxis(axisZ);
 
                 double angleRad = angleDegrees * Math.PI / 180.0;
@@ -527,8 +581,10 @@ namespace Builder
 
                 anglePlane.Create();
 
-                var offsetPlane = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_planeOffset);
-                var offsetDef = (ksPlaneOffsetDefinition)offsetPlane.GetDefinition();
+                var offsetPlane = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_planeOffset);
+                var offsetDef = (ksPlaneOffsetDefinition)
+                    offsetPlane.GetDefinition();
 
                 offsetDef.SetPlane(anglePlane);
                 offsetDef.direction = true;
@@ -548,17 +604,22 @@ namespace Builder
         /// <summary>
         /// Создает прямоугольный эскиз на касательной плоскости
         /// </summary>
-        /// <param name="tangentPlane">Касательная плоскость к цилиндру</param>
-        /// <param name="rectangleHeight">Высота прямоугольника (вдоль цилиндра)</param>
+        /// <param name="tangentPlane">Касательная плоскость
+        /// к цилиндру</param>
+        /// <param name="rectangleHeight">Высота прямоугольника
+        /// (вдоль цилиндра)</param>
         /// <param name="heightBottom">Высота дна стакана</param>
-        /// <param name="baseOffset">Смещение от основания плоскости по высоте</param>
+        /// <param name="baseOffset">Смещение от основания плоскости
+        /// по высоте</param>
         /// <returns>Эскиз прямоугольника или null</returns>
-        public ksEntity CreateRectangleOnTangentPlane(ksEntity tangentPlane, double rectangleHeight,
-                                                     double heightBottom, double baseOffset = 0)
+        public ksEntity CreateRectangleOnTangentPlane(ksEntity tangentPlane,
+            double rectangleHeight, double heightBottom,
+                double baseOffset = 0)
         {
             try
             {
-                var sketch = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_sketch);
+                var sketch = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_sketch);
                 var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
 
                 sketchDef.SetPlane(tangentPlane);
@@ -567,7 +628,8 @@ namespace Builder
                 var doc2D = BeginSketchEdit(sketch);
                 if (doc2D == null)
                 {
-                    throw new ArgumentException($"Не удалось начать редактирование!");
+                    throw new ArgumentException
+                        ($"Не удалось начать редактирование!");
                 }
 
                 double halfWidth = 10;
@@ -604,23 +666,27 @@ namespace Builder
         /// <param name="entityToCopy">Элемент для копирования</param>
         /// <param name="numberOfCopies">Количество копий в массиве</param>
         /// <returns>Успешность создания массива</returns>
-        public bool CreateCircularArrayForEdge(ksEntity entityToCopy, int numberOfCopies)
+        public bool CreateCircularArrayForEdge(ksEntity entityToCopy,
+            int numberOfCopies)
         {
             try
             {
-                var circularCopy = (ksEntity)_part.NewEntity((short)Obj3dType.o3d_circularCopy);
+                var circularCopy = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_circularCopy);
                 if (circularCopy == null)
                 {
                     return false;
                 }
 
-                var copyDef = (ksCircularCopyDefinition)circularCopy.GetDefinition();
+                var copyDef = (ksCircularCopyDefinition)
+                    circularCopy.GetDefinition();
                 if (copyDef == null)
                 {
                     return false;
                 }
 
-                var axisZ = (ksEntity)_part.GetDefaultEntity((short)Obj3dType.o3d_axisOZ);
+                var axisZ = (ksEntity)_part.GetDefaultEntity
+                    ((short)Obj3dType.o3d_axisOZ);
                 if (axisZ == null)
                 {
                     return false;
@@ -628,7 +694,8 @@ namespace Builder
 
                 copyDef.SetAxis(axisZ);
 
-                var operations = (ksEntityCollection)copyDef.GetOperationArray();
+                var operations = (ksEntityCollection)
+                    copyDef.GetOperationArray();
                 if (operations == null)
                 {
                     return false;
@@ -636,7 +703,8 @@ namespace Builder
 
                 operations.Clear();
                 operations.Add(entityToCopy);
-                bool radialResult = copyDef.SetCopyParamAlongDir(1, 0, false, true);
+                bool radialResult = copyDef.SetCopyParamAlongDir
+                    (1, 0, false, true);
                 dynamic dynamicCopyDef = copyDef;
                 dynamicCopyDef.count1 = 1;
                 dynamicCopyDef.count2 = numberOfCopies;

@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="C:\Users\Андрей\Downloads\ORSAPR\faceted_glass_plugin\faceted_glass_plugin\Builder\BuilderFacetedGlass.csproj" />
-		<ProjectReference Include="C:\Users\Андрей\Downloads\ORSAPR\faceted_glass_plugin\faceted_glass_plugin\Core\Core.csproj" />
+		<ProjectReference Include="C:\Users\andre\OneDrive\Документы\GitHub\faceted_glass_plugin\faceted_glass_plugin\Builder\BuilderFacetedGlass.csproj" />
+		<ProjectReference Include="C:\Users\andre\OneDrive\Документы\GitHub\faceted_glass_plugin\faceted_glass_plugin\Core\Core.csproj" />
 	</ItemGroup>
 </Project>

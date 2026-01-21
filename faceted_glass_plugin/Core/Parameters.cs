@@ -9,98 +9,125 @@ namespace Core
     public class Parameters
     {
         /// <summary>
-        /// Конструктор класса Parameters. Содержит инициализацию численных параметров гранёного стакана
+        /// Конструктор класса Parameters. 
+        /// Содержит инициализацию численных параметров гранёного стакана
         /// </summary>
         public Parameters()
         {
-            /// <summary>
-            /// Общая высота стакана
-            /// </summary>
-            NumericalParameter heighttotal = new NumericalParameter();
-            heighttotal.MinValue = 100;
-            heighttotal.MaxValue = 150;
+            //TODO: refactor +
+            var heightTotal = new NumericalParameter(100, 150);
+            var radius = new NumericalParameter(45, 60);
+            var heightBottom = new NumericalParameter(10, 25);
+            var thicknessLowerEdge = new NumericalParameter(2, 5);
+            var thicknessUpperEdge = new NumericalParameter(4, 7);
+            var heightUpperEdge = new NumericalParameter(20, 40);
+            var numberOfEdge = new NumericalParameter(8, 11);
 
             /// <summary>
-            /// Радиус стакана
+            /// Занесения значений параметров в словарь
+            /// с соотвествующими ключами
             /// </summary>
-            NumericalParameter radius = new NumericalParameter();
-            radius.MinValue = 45;
-            radius.MaxValue = 60;
-
-            /// <summary>
-            /// Высота дна стакана
-            /// </summary>
-            NumericalParameter heightbottom = new NumericalParameter();
-            heightbottom.MinValue = 10;
-            heightbottom.MaxValue = 25;
-
-            /// <summary>
-            /// Толщина нижней стенки стакана
-            /// </summary>
-            NumericalParameter thicknessloweredge = new NumericalParameter();
-            thicknessloweredge.MinValue = 2;
-            thicknessloweredge.MaxValue = 5;
-
-            /// <summary>
-            /// Толщина верхней стенки стакана
-            /// </summary>
-            NumericalParameter thicknessupperedge = new NumericalParameter();
-            thicknessupperedge.MinValue = 4;
-            thicknessupperedge.MaxValue = 7;
-
-            /// <summary>
-            /// Высота верхней стенки стакана
-            /// </summary>
-            NumericalParameter heightupperedge = new NumericalParameter();
-            heightupperedge.MinValue = 20;
-            heightupperedge.MaxValue = 40;
-
-            /// <summary>
-            /// Количество граней стакана
-            /// </summary>
-            NumericalParameter numberofedge = new NumericalParameter();
-            numberofedge.MinValue = 8;
-            numberofedge.MaxValue = 11;
-
-            /// <summary>
-            /// Занесения значений параметров в словарь с соотвествующими ключами
-            /// </summary>
-            NumericalParameters = new Dictionary<ParameterType, NumericalParameter>()
+            NumericalParameters = new Dictionary<ParameterType,
+                NumericalParameter>()
             {
-                [ParameterType.HeightTotal] = heighttotal,
+                [ParameterType.HeightTotal] = heightTotal,
                 [ParameterType.Radius] = radius,
-                [ParameterType.HeightBottom] = heightbottom,
-                [ParameterType.ThicknessLowerEdge] = thicknessloweredge,
-                [ParameterType.ThicknessUpperEdge] = thicknessupperedge,
-                [ParameterType.HeightUpperEdge] = heightupperedge,
-                [ParameterType.NumberOfEdge] = numberofedge,
+                [ParameterType.HeightBottom] = heightBottom,
+                [ParameterType.ThicknessLowerEdge] = thicknessLowerEdge,
+                [ParameterType.ThicknessUpperEdge] = thicknessUpperEdge,
+                [ParameterType.HeightUpperEdge] = heightUpperEdge,
+                [ParameterType.NumberOfEdge] = numberOfEdge,
             };
 
         }
 
+        //TODO: RSDN +
         /// <summary>
         /// Словарь параметров гранёного стакана
         /// </summary>
-        public Dictionary<ParameterType, NumericalParameter> NumericalParameters { get; set; }
+        public Dictionary<ParameterType, NumericalParameter>
+            NumericalParameters
+        { get; set; }
 
+        //TODO: RSDN +
         /// <summary>
-        /// Выставляет максимальное и минимальное значения для параметра
+        /// Устанавливает зависимые границы для параметра
+        /// на основе другого параметра
         /// </summary>
-        /// <param name="independ">Параметр на основе которого будет вычислятся макс и мин значения</param>
-        /// <param name="depend">Параметр к которому будет примернятся максимально и минимальное значение</param>
-        /// <param name="maxratio">Соотношение велечин для максимального значения</param>
-        /// <param name="minratio">Соотношение велечин для минимального значения</param>
-        public void SetDependenses(NumericalParameter independ, NumericalParameter depend, double maxratio, double minratio = 0)
+        /// <param name="independentParameter">Независимый параметр, 
+        /// на основе которого вычисляются границы</param>
+        /// <param name="dependentParameter">Зависимый параметр, 
+        /// для которого устанавливаются границы</param>
+        /// <param name="maxRatio">Коэффициент для вычисления 
+        /// максимального значения</param>
+        /// <param name="minRatio">Коэффициент для вычисления 
+        /// минимального значения</param>
+        /// <exception cref="ArgumentNullException">Если один 
+        /// из параметров равен null</exception>
+        /// <exception cref="ArgumentException">Если коэффициенты 
+        /// некорректны</exception>
+        public void SetDependencies(
+            NumericalParameter independentParameter,
+            NumericalParameter dependentParameter,
+            double maxRatio,
+            double minRatio = 0)
         {
-            depend.MaxValue = independ.Value * maxratio;
-            if (minratio != 0)
+            if (independentParameter == null)
+                throw new ArgumentNullException(nameof(independentParameter));
+
+            if (dependentParameter == null)
+                throw new ArgumentNullException(nameof(dependentParameter));
+
+            if (maxRatio <= 0)
+                throw new ArgumentException("Коэффициент maxRatio должен " +
+                    "быть больше 0", nameof(maxRatio));
+
+            if (minRatio < 0)
+                throw new ArgumentException("Коэффициент minRatio не может" +
+                    " быть отрицательным", nameof(minRatio));
+
+            if (minRatio > maxRatio)
+                throw new ArgumentException("minRatio не может быть больше" +
+                    " maxRatio");
+
+            double currentValue = independentParameter.Value;
+            double newMaxValue = currentValue * maxRatio;
+            double newMinValue;
+
+            if (minRatio > 0)
             {
-                depend.MinValue = independ.Value * minratio;
+                newMinValue = currentValue * minRatio;
             }
             else
             {
-                depend.MinValue = depend.MaxValue * 0.1;
+                const double defaultMinRatio = 0.1;
+                newMinValue = newMaxValue * defaultMinRatio;
             }
+            dependentParameter.SetRange(newMinValue, newMaxValue);
+        }
+
+        /// <summary>
+        /// Получает параметр по его типу
+        /// </summary>
+        /// <param name="type">Тип параметра</param>
+        /// <returns>Численный параметр</returns>
+        /// <exception cref="KeyNotFoundException">
+        /// Если параметр не найден</exception>
+        public NumericalParameter GetParameter(ParameterType type)
+        {
+            return NumericalParameters[type];
+        }
+
+        /// <summary>
+        /// Пытается получить параметр по его типу
+        /// </summary>
+        /// <param name="type">Тип параметра</param>
+        /// <param name="parameter">Найденный параметр</param>
+        /// <returns>True если параметр найден, иначе False</returns>
+        public bool TryGetParameter(ParameterType type, out
+            NumericalParameter parameter)
+        {
+            return NumericalParameters.TryGetValue(type, out parameter);
         }
     }
 }

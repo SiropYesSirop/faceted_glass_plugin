@@ -18,7 +18,8 @@ namespace GlassPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что ValidateParameters возвращает false для null параметров")]
+        [Description("Проверяет, что ValidateParameters" +
+            " возвращает false для null параметров")]
         public void ValidateParameters_WithNullParameters_ShouldReturnFalse()
         {
             bool result = _builder.ValidateParameters(null);
@@ -26,25 +27,19 @@ namespace GlassPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что ValidateParameters возвращает true для корректных параметров")]
+        [Description("Проверяет, что ValidateParameters" +
+            " возвращает true для корректных параметров")]
         public void ValidateParameters_WithValidParameters_ShouldReturnTrue()
         {
             var parameters = CreateValidParameters();
             bool result = _builder.ValidateParameters(parameters);
-            result.Should().BeTrue("Все параметры находятся в допустимых диапазонах и удовлетворяют бизнес-правилам");
+            result.Should().BeTrue("Все параметры находятся" +
+                " в допустимых диапазонах и удовлетворяют бизнес-правилам");
         }
 
         [Test]
-        [Description("Проверяет, что ValidateParameters возвращает false при исключении в приватном методе")]
-        public void ValidateParameters_WhenPrivateMethodThrows_ShouldReturnFalse()
-        {
-            var parameters = new Parameters();
-            bool result = _builder.ValidateParameters(parameters);
-            result.Should().BeFalse();
-        }
-
-        [Test]
-        [Description("Проверяет приватный метод валидации с корректными значениями")]
+        [Description("Проверяет приватный метод " +
+            "валидации с корректными значениями")]
         public void ValidateParametersFields_WithValidValues_ShouldNotThrow()
         {
             var privateMethod = GetPrivateValidateMethod();
@@ -52,19 +47,20 @@ namespace GlassPlugin.Tests
             Action act = () => privateMethod.Invoke(_builder, new object[]
             {
                 120.0,
-                50.0,  
-                15.0,  
-                3.0,     
-                5.0, 
-                30.0,     
-                10  
+                50.0,
+                15.0,
+                3.0,
+                5.0,
+                30.0,
+                10
             });
 
             act.Should().NotThrow();
         }
 
         [Test]
-        [Description("Проверяет валидацию на некорректную высоту средней части стакана")]
+        [Description("Проверяет валидацию на некорректную" +
+            " высоту средней части стакана")]
         public void ValidateParametersFields_HeightTotalLowerThanHeightBotoomAndHeightUpperEdge_ShouldThrow()
         {
             var privateMethod = GetPrivateValidateMethod();
@@ -82,7 +78,8 @@ namespace GlassPlugin.Tests
 
             act.Should().Throw<TargetInvocationException>()
                 .WithInnerException<ArgumentException>()
-                .WithMessage("*Высота средней части стакана не может быть меньше либо равна нулю!*");
+                .WithMessage("*Высота средней части стакана" +
+                " не может быть меньше либо равна нулю!*");
         }
 
         [Test]
@@ -103,8 +100,9 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Общая высота*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.HeightTotalInvalid);
         }
 
         [Test]
@@ -125,8 +123,9 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Общая высота*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.HeightTotalInvalid);
         }
 
         [Test]
@@ -147,8 +146,9 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Внешний радиус*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.RadiusInvalid);
         }
 
         [Test]
@@ -169,8 +169,9 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Внешний радиус*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.RadiusInvalid);
         }
 
         [Test]
@@ -191,8 +192,9 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Высота дна*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.HeightBottomInvalid);
         }
 
         [Test]
@@ -213,8 +215,9 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Толщина нижней стенки*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.ThicknessLowerEdgeInvalid);
         }
 
         [Test]
@@ -235,8 +238,55 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Толщина нижней стенки*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.ThicknessLowerEdgeInvalid);
+        }
+
+        [Test]
+        [Description("Проверяет валидацию отрицательной толщины верхней стенки")]
+        public void ValidateParametersFields_NegativeThicknessUpperEdge_ShouldThrow()
+        {
+            var privateMethod = GetPrivateValidateMethod();
+
+            Action act = () => privateMethod.Invoke(_builder, new object[]
+            {
+                120.0,
+                50.0,
+                15.0,
+                3.0,
+                -2.0,
+                30.0,
+                10
+            });
+
+            act.Should().Throw<TargetInvocationException>()
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.ThicknessUpperEdgeInvalid);
+        }
+
+        [Test]
+        [Description("Проверяет валидацию отрицательной высоты верхней стенки")]
+        public void ValidateParametersFields_NegativeHeightUpperEdge_ShouldThrow()
+        {
+            var privateMethod = GetPrivateValidateMethod();
+
+            Action act = () => privateMethod.Invoke(_builder, new object[]
+            {
+                120.0,
+                50.0,
+                15.0,
+                3.0,
+                4.0,
+                -2.0,
+                10
+            });
+
+            act.Should().Throw<TargetInvocationException>()
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.HeightUpperEdgeInvalid);
         }
 
         [Test]
@@ -257,12 +307,14 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Количество граней*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.NumberOfEdgesInvalid);
         }
 
         [Test]
-        [Description("Проверяет валидацию слишком большого количества граней")]
+        [Description("Проверяет валидацию слишком " +
+            "большого количества граней")]
         public void ValidateParametersFields_MoreThan20Edges_ShouldThrow()
         {
             var privateMethod = GetPrivateValidateMethod();
@@ -279,8 +331,9 @@ namespace GlassPlugin.Tests
             });
 
             act.Should().Throw<TargetInvocationException>()
-                .WithInnerException<ArgumentException>()
-                .WithMessage("*Количество граней*");
+                .WithInnerException<FacetedGlassException>()
+                .Which.ExceptionType.Should().Be
+                (FacetedGlassExceptionType.NumberOfEdgesInvalid);
         }
 
         [Test]
@@ -297,7 +350,7 @@ namespace GlassPlugin.Tests
                 3.0,
                 5.0,
                 30.0,
-                8      
+                8
             });
 
             act.Should().NotThrow();
@@ -317,14 +370,15 @@ namespace GlassPlugin.Tests
                 3.0,
                 5.0,
                 30.0,
-                11     
+                11
             });
 
             act.Should().NotThrow();
         }
 
         [Test]
-        [Description("Проверяет бизнес-правило: толщина нижней стенки должна быть меньше радиуса")]
+        [Description("Проверяет бизнес-правило: " +
+            "толщина нижней стенки должна быть меньше радиуса")]
         public void ValidateParametersFields_ThicknessLowerEdgeGreaterThanRadius_ShouldThrow()
         {
             var privateMethod = GetPrivateValidateMethod();
@@ -332,9 +386,9 @@ namespace GlassPlugin.Tests
             Action act = () => privateMethod.Invoke(_builder, new object[]
             {
                 120.0,
-                10.0, 
+                10.0,
                 15.0,
-                12.0, 
+                12.0,
                 5.0,
                 30.0,
                 10
@@ -346,7 +400,8 @@ namespace GlassPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет бизнес-правило: толщина верхней стенки должна быть меньше радиуса")]
+        [Description("Проверяет бизнес-правило:" +
+            " толщина верхней стенки должна быть меньше радиуса")]
         public void ValidateParametersFields_ThicknessUpperEdgeGreaterThanRadius_ShouldThrow()
         {
             var privateMethod = GetPrivateValidateMethod();
@@ -378,7 +433,8 @@ namespace GlassPlugin.Tests
                     null,
                     new Type[] {
                         typeof(double), typeof(double), typeof(double),
-                        typeof(double), typeof(double), typeof(double), typeof(int)
+                        typeof(double), typeof(double),
+                        typeof(double), typeof(int)
                     },
                     null);
         }
@@ -389,19 +445,27 @@ namespace GlassPlugin.Tests
         private Parameters CreateValidParameters()
         {
             var parameters = new Parameters();
-            parameters.NumericalParameters[ParameterType.HeightTotal].Value = 120.0;
-            parameters.NumericalParameters[ParameterType.Radius].Value = 50.0;
-            parameters.NumericalParameters[ParameterType.HeightBottom].Value = 15.0;
-            parameters.NumericalParameters[ParameterType.ThicknessLowerEdge].Value = 3.0;
-            parameters.NumericalParameters[ParameterType.ThicknessUpperEdge].Value = 5.0;
-            parameters.NumericalParameters[ParameterType.HeightUpperEdge].Value = 30.0;
-            parameters.NumericalParameters[ParameterType.NumberOfEdge].Value = 10;
+            parameters.NumericalParameters
+                [ParameterType.HeightTotal].Value = 120.0;
+            parameters.NumericalParameters
+                [ParameterType.Radius].Value = 50.0;
+            parameters.NumericalParameters
+                [ParameterType.HeightBottom].Value = 15.0;
+            parameters.NumericalParameters
+                [ParameterType.ThicknessLowerEdge].Value = 3.0;
+            parameters.NumericalParameters
+                [ParameterType.ThicknessUpperEdge].Value = 5.0;
+            parameters.NumericalParameters
+                [ParameterType.HeightUpperEdge].Value = 30.0;
+            parameters.NumericalParameters
+                [ParameterType.NumberOfEdge].Value = 10;
 
             return parameters;
         }
 
         [Test]
-        [Description("Проверяет, что BuildFacetedGlass выбрасывает исключение при null параметрах")]
+        [Description("Проверяет, что BuildFacetedGlass" +
+            " выбрасывает исключение при null параметрах")]
         public void BuildFacetedGlass_WithNullParameters_ShouldThrow()
         {
             Action act = () => _builder.BuildFacetedGlass(null);
@@ -411,7 +475,8 @@ namespace GlassPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что BuildFacetedGlass вызывает валидацию параметров")]
+        [Description("Проверяет, что BuildFacetedGlass" +
+            " вызывает валидацию параметров")]
         public void BuildFacetedGlass_ShouldValidateParameters()
         {
             var parameters = CreateValidParameters();
@@ -420,6 +485,48 @@ namespace GlassPlugin.Tests
 
             act.Should().Throw<ArgumentException>()
                 .WithMessage("*Не удалось подключиться к КОМПАС*");
+        }
+
+        [Test]
+        [Description("Проверяет дефолтное сообщение " +
+            "при неизвестном типе исключения")]
+        public void GetDefaultMessage_WithInvalidEnumValue_ShouldReturnDefaultMessage()
+        {
+            var methodInfo = typeof(FacetedGlassException)
+                .GetMethod("GetDefaultMessage",
+                    BindingFlags.NonPublic | BindingFlags.Static);
+
+            methodInfo.Should().NotBeNull("Метод GetDefaultMessage" +
+                " должен существовать");
+
+            var invalidEnumValue = (FacetedGlassExceptionType)999;
+
+            string result = (string)methodInfo.Invoke(null, new object[]
+            {
+                invalidEnumValue,
+                123.45
+            });
+
+            result.Should().Be("Произошла ошибка при построении" +
+                " гранёного стакана");
+        }
+
+        [Test]
+        [Description("Проверяет, что свойство ParameterValue " +
+            "возвращает переданное значение")]
+        public void FacetedGlassException_ParameterValue_ShouldReturnCorrectValue()
+        {
+            var testValue = new { Test = "Value", Number = 123 };
+            var exceptionType = FacetedGlassExceptionType.HeightTotalInvalid;
+
+            var exception = new FacetedGlassException(
+                exceptionType,
+                "Test message",
+                "TestParameter",
+                testValue);
+
+            exception.ParameterValue.Should().Be(testValue);
+            exception.ParameterValue.Should().BeOfType(testValue.GetType());
         }
     }
 }
