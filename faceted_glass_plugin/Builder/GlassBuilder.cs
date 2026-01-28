@@ -83,10 +83,7 @@ namespace GlassPlugin
                 bool arraySuccess = _wrapper.CreateCircularArrayForEdge
                     (singleEdge, numberOfEdges);
 
-                if (tangentPlane != null)
-                {
-                }
-                else
+                if (tangentPlane == null)
                 {
                     throw new Exception
                         ("Не удалось создать касательную плоскость!");
@@ -99,7 +96,6 @@ namespace GlassPlugin
             }
         }
 
-        //TODO: user defined exception +
         /// <summary>
         /// Проверка параметров на валидность
         /// </summary>
@@ -118,6 +114,7 @@ namespace GlassPlugin
             double thicknessLowerEdge, double thicknessUpperEdge,
                        double heightUpperEdge, int numberOfEdges)
         {
+            //TODO: {}
             if (heightTotal <= 0) throw FacetedGlassException.Create(
                 FacetedGlassExceptionType.HeightTotalInvalid,
                     nameof(heightTotal), heightTotal);

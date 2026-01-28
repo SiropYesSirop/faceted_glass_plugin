@@ -1,5 +1,6 @@
 ﻿using System;
 
+//TODO: XML
 public class NumericalParameter
 {
     private double _minValue;
@@ -25,6 +26,7 @@ public class NumericalParameter
         get => _value;
         set
         {
+            //TODO: {}
             if (value < _minValue || value > _maxValue)
                 throw new ArgumentException($"Значение {value} выходит" +
                     $" за границы [{_minValue}, {_maxValue}]");
@@ -37,6 +39,7 @@ public class NumericalParameter
     /// </summary>
     public void SetRange(double minValue, double maxValue)
     {
+        //TODO: {}
         if (minValue > maxValue)
             throw new ArgumentException("Минимальное значение не может " +
                 "быть больше максимального");
@@ -44,6 +47,7 @@ public class NumericalParameter
         _minValue = minValue;
         _maxValue = maxValue;
 
+        //TODO: {}
         if (_value < _minValue)
             _value = _minValue;
         else if (_value > _maxValue)

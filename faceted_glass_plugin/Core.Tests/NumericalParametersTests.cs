@@ -7,6 +7,7 @@ namespace Core.Tests
     [TestFixture]
     public sealed class NumericalParameterTests
     {
+        //TODO: XML
         private const double Tolerance = 1e-10;
 
         [Test]

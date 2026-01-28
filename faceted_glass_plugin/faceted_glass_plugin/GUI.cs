@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace faceted_glass_plugin
 {
-    //TODO: RSDN +
+    //TODO: RSDN
     public partial class GUI : Form
     {
         /// <summary>
@@ -27,31 +27,26 @@ namespace faceted_glass_plugin
         /// </summary>
         private Parameters _parameters;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее значение радиуса стакана
         /// </summary>
         private double _radiusCurrent;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее значение высоты дна стакана
         /// </summary>
         private double _heightBottomCurrent;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее значение толщины верхней стенки стакана
         /// </summary>
         private double _thicknessUpperEdgeCurrent;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее значение высоты верхней стенки стакана
         /// </summary>
         private double _heightUpperEdgeCurrent;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее количетства граней стакана
         /// </summary>
@@ -73,9 +68,9 @@ namespace faceted_glass_plugin
             _parameters = new Parameters();
             _builder = new GlassBuilder();
 
-            //TODO: RSDN +
             var heightTotalParam = _parameters.NumericalParameters
                 [ParameterType.HeightTotal];
+            //TODO: duplication
             labelLimitHeightTotal.Text = $"от {heightTotalParam.MinValue:F1}" +
                 $" до " + $"{heightTotalParam.MaxValue:F1} мм";
             var radiusParam = _parameters.NumericalParameters
@@ -108,7 +103,6 @@ namespace faceted_glass_plugin
                 $"{numberOfEdgeParam.MinValue:F1} до" +
                     $" {numberOfEdgeParam.MaxValue:F1} шт.";
 
-            //TODO: from parameters +
             textBoxHeightTotal.Text = heightTotalParam
                 .Value.ToString();
             textBoxRadius.Text = radiusParam
@@ -178,12 +172,14 @@ namespace faceted_glass_plugin
                 }
                 return true;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 switch (ex.Message)
                 {
-                    //TODO: {} +
+                    //TODO: {}
                     case "HeightTotal_null":
+                    {
                         if (textBoxError != null)
                         {
                             textBoxError.Text += "";
@@ -191,6 +187,7 @@ namespace faceted_glass_plugin
                             " в поле 'Общая высота'!\n";
                         }
                         break;
+                    }
                     case "Radius_null":
                         if (textBoxError != null)
                         {
@@ -242,6 +239,7 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: duplication
         /// <summary>
         /// Обработчик потери фокуса полем ввода количества граней
         /// </summary>
@@ -287,6 +285,7 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: duplication
         /// <summary>
         /// Обработчик потери фокуса полем ввода высоты верхней стенки
         /// </summary>
@@ -332,6 +331,7 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: duplication
         /// <summary>
         /// Обработчик потери фокуса полем ввода толщины верхней стенки
         /// </summary>
@@ -378,6 +378,7 @@ namespace faceted_glass_plugin
             }
         }
 
+
         /// <summary>
         /// Обработчик потери фокуса полем ввода толщины нижней стенки
         /// </summary>
@@ -422,6 +423,7 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: duplication
         /// <summary>
         /// Обработчик потери фокуса полем ввода высоты дна
         /// </summary>
@@ -467,6 +469,7 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: duplication
         /// <summary>
         /// Обработчик потери фокуса полем ввода радиуса
         /// </summary>
@@ -606,7 +609,7 @@ namespace faceted_glass_plugin
             }
         }
 
-        //TODO: RSDN +
+        //TODO: XML
         private void CheckParametersBeforeBuilding()
         {
             if (textBoxHeightTotal.ForeColor == Color.Red
@@ -625,6 +628,7 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: XML
         private void buttonExportSTL_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog saveDialog = new SaveFileDialog())
@@ -644,7 +648,7 @@ namespace faceted_glass_plugin
                         _builder.BuildAndExportToStl(_parameters, saveDialog.FileName);
 
                         Cursor.Current = Cursors.Default;
-
+                        //TODO: RSDN
                         MessageBox.Show($"Модель успешно экспортирована в:\n{saveDialog.FileName}",
                             "Успешный экспорт",
                             MessageBoxButtons.OK,

@@ -67,7 +67,7 @@ namespace Builder
                     _kompas = (KompasObject)Activator.
                         CreateInstance(kompasType);
                 }
-
+                //TODO: {}
                 if (_kompas == null)
                     return false;
 
@@ -90,6 +90,7 @@ namespace Builder
         {
             try
             {
+                //TODO: {}
                 if (!_isCadAttached && !ConnectCAD())
                     return false;
 
@@ -211,6 +212,7 @@ namespace Builder
                 var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
                 sketchDef.EndEdit();
             }
+            //TODO: ??
             catch { }
         }
 
@@ -229,6 +231,7 @@ namespace Builder
             {
                 doc2D.ksCircle(centerX, centerY, radius, style);
             }
+            //TODO: ??
             catch { }
         }
 
@@ -245,6 +248,7 @@ namespace Builder
         public ksEntity CreateExtrusion(ksEntity sketch, bool direction,
             double depth, string name = "")
         {
+            //TODO: duplication
             try
             {
                 var extrude = (ksEntity)_part.NewEntity
@@ -265,6 +269,7 @@ namespace Builder
                         dynamic extrudeDynamic = extrude;
                         extrudeDynamic.Name = name;
                     }
+                    //TODO: ??
                     catch { }
                 }
 
@@ -289,6 +294,7 @@ namespace Builder
         public ksEntity CreateCutExtrusion(ksEntity sketch, bool direction,
             double depth, string name = "")
         {
+            //TODO: duplication
             try
             {
                 var cut = (ksEntity)_part.NewEntity
@@ -309,6 +315,7 @@ namespace Builder
                         dynamic cutDynamic = cut;
                         cutDynamic.Name = name;
                     }
+                    //TODO: ??
                     catch { }
                 }
 
@@ -449,6 +456,7 @@ namespace Builder
             {
                 bool lowerSuccess = CreateCylinder("ВнешнийНижний",
                     externalRadiusLower, heightBottom, 0);
+                //TODO: {}
                 if (!lowerSuccess) return false;
 
                 bool middleSuccess = CreateCylinder("ВнешнийСредний",
@@ -490,6 +498,7 @@ namespace Builder
             {
                 doc2D.ksLineSeg(x1, y1, x2, y2, style);
             }
+            //TODO: ??
             catch { }
         }
 
@@ -727,6 +736,7 @@ namespace Builder
             }
         }
 
+        //TODO: remove
         /// <summary>
         /// Перечисление для формата экспорта
         /// </summary>

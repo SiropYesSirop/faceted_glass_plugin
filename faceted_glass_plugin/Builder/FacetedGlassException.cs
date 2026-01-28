@@ -2,6 +2,7 @@
 
 namespace GlassPlugin
 {
+    //TODO: remove
     /// <summary>
     /// Типы исключений для гранёного стакана
     /// </summary>
@@ -119,9 +120,12 @@ namespace GlassPlugin
         {
             switch (exceptionType)
             {
+                //TODO: {}
                 case FacetedGlassExceptionType.HeightTotalInvalid:
+                {
                     return $"Общая высота должна быть положительной" +
-                        $" (значение: {parameterValue})";
+                    $" (значение: {parameterValue})";
+                }
 
                 case FacetedGlassExceptionType.RadiusInvalid:
                     return $"Радиус должен быть положительным" +

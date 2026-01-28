@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
+    //TODO: remove
     /// <summary>
     /// Тип грани стакана
     /// </summary>
@@ -30,7 +31,6 @@ namespace Core
         /// </summary>
         public Parameters()
         {
-            //TODO: refactor +
             var heightTotal = new NumericalParameter(100, 150);
             var radius = new NumericalParameter(45, 60);
             var heightBottom = new NumericalParameter(10, 25);
@@ -62,15 +62,12 @@ namespace Core
         /// </summary>
         public EdgeType EdgeType { get; set; }
 
-        //TODO: RSDN +
         /// <summary>
         /// Словарь параметров гранёного стакана
         /// </summary>
         public Dictionary<ParameterType, NumericalParameter>
-            NumericalParameters
-        { get; set; }
+            NumericalParameters { get; set; }
 
-        //TODO: RSDN +
         /// <summary>
         /// Устанавливает зависимые границы для параметра
         /// на основе другого параметра
@@ -93,6 +90,7 @@ namespace Core
             double maxRatio,
             double minRatio = 0)
         {
+            //TODO: {}
             if (independentParameter == null)
                 throw new ArgumentNullException(nameof(independentParameter));
 
