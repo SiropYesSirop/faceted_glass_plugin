@@ -3,6 +3,7 @@ using Kompas6Constants;
 using Kompas6Constants3D;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Builder
@@ -723,6 +724,56 @@ namespace Builder
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Перечисление для формата экспорта
+        /// </summary>
+        public enum AdditionFormatType
+        {
+            /// <summary>
+            /// STL формат
+            /// </summary>
+            FormatSTL = 6
+        }
+
+        /// <summary>
+        /// Метод экспорта в STL
+        /// </summary>
+        public bool ExportToStlSimple(string filePath)
+        {
+            try
+            {
+                if (_document3D == null)
+                    return false;
+
+                filePath = Path.ChangeExtension(filePath, ".stl");
+
+                dynamic doc3D = _document3D;
+
+                try
+                {
+                    return doc3D.SaveAs(filePath, 6);
+                }
+                catch
+                {
+                    try
+                    {
+                        object paramObj = new { format = 6 };
+                        return doc3D.SaveAsToAdditionFormat(filePath,
+                            paramObj);
+                    }
+                    catch
+                    {
+                        return doc3D.SaveAs(filePath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ExportToStlSimple error: {ex.Message}");
+                return false;
             }
         }
     }

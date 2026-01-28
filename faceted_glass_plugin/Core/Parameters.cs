@@ -6,6 +6,22 @@ using System.Threading.Tasks;
 
 namespace Core
 {
+    /// <summary>
+    /// Тип грани стакана
+    /// </summary>
+    public enum EdgeType
+    {
+        /// <summary>
+        /// Прямоугольная грань
+        /// </summary>
+        Rectangular,
+
+        /// <summary>
+        /// Скруглённая грань
+        /// </summary>
+        Rounded
+    }
+
     public class Parameters
     {
         /// <summary>
@@ -22,6 +38,7 @@ namespace Core
             var thicknessUpperEdge = new NumericalParameter(4, 7);
             var heightUpperEdge = new NumericalParameter(20, 40);
             var numberOfEdge = new NumericalParameter(8, 11);
+            EdgeType = EdgeType.Rectangular;
 
             /// <summary>
             /// Занесения значений параметров в словарь
@@ -38,8 +55,12 @@ namespace Core
                 [ParameterType.HeightUpperEdge] = heightUpperEdge,
                 [ParameterType.NumberOfEdge] = numberOfEdge,
             };
-
         }
+
+        /// <summary>
+        /// Тип боковых граней стакана
+        /// </summary>
+        public EdgeType EdgeType { get; set; }
 
         //TODO: RSDN +
         /// <summary>

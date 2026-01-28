@@ -164,7 +164,7 @@ namespace GlassPlugin
 
             if (thicknessUpperEdge >= externalRadius)
                 throw new ArgumentException(
-                    $"Толщина верхней стенки ({thicknessUpperEdge}) должна " +
+                    $"Толщина верхней стенки ({thicknessUpperEdge}) должна "+
                         $"быть меньше внешнего радиуса ({externalRadius})");
         }
 
@@ -208,6 +208,35 @@ namespace GlassPlugin
             catch
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Построить стакан и экспортировать в STL
+        /// </summary>
+        public void BuildAndExportToStl(Parameters parameters,
+            string stlFilePath)
+        {
+            try
+            {
+                BuildFacetedGlass(parameters);
+
+                if (_wrapper != null)
+                {
+                    bool exportSuccess = _wrapper.
+                        ExportToStlSimple(stlFilePath);
+
+                    if (!exportSuccess)
+                    {
+                        throw new Exception("Не удалось экспортировать " +
+                            "модель в STL формат");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Ошибка построения и" +
+                    $" экспорта: {ex.Message}");
             }
         }
     }

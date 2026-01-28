@@ -30,6 +30,7 @@
         {
             this.pictureBoxMainMenu = new System.Windows.Forms.PictureBox();
             this.groupBoxParameters = new System.Windows.Forms.GroupBox();
+            this.buttonExportSTL = new System.Windows.Forms.Button();
             this.labelLimitNumberOfEdges = new System.Windows.Forms.Label();
             this.labelLimitHeightUpperEdge = new System.Windows.Forms.Label();
             this.labelLimitThicknessUpperEdge = new System.Windows.Forms.Label();
@@ -60,9 +61,10 @@
             // pictureBoxMainMenu
             // 
             this.pictureBoxMainMenu.Image = global::faceted_glass_plugin.Properties.Resources.Circuit;
-            this.pictureBoxMainMenu.Location = new System.Drawing.Point(473, 12);
+            this.pictureBoxMainMenu.Location = new System.Drawing.Point(631, 15);
+            this.pictureBoxMainMenu.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxMainMenu.Name = "pictureBoxMainMenu";
-            this.pictureBoxMainMenu.Size = new System.Drawing.Size(457, 295);
+            this.pictureBoxMainMenu.Size = new System.Drawing.Size(609, 363);
             this.pictureBoxMainMenu.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxMainMenu.TabIndex = 0;
             this.pictureBoxMainMenu.TabStop = false;
@@ -92,224 +94,261 @@
             this.groupBoxParameters.Controls.Add(this.textBoxHeightTotal);
             this.groupBoxParameters.Controls.Add(this.labelRadius);
             this.groupBoxParameters.Controls.Add(this.labelHeightTotal);
-            this.groupBoxParameters.Location = new System.Drawing.Point(12, 6);
+            this.groupBoxParameters.Location = new System.Drawing.Point(16, 7);
+            this.groupBoxParameters.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxParameters.Name = "groupBoxParameters";
-            this.groupBoxParameters.Size = new System.Drawing.Size(455, 301);
+            this.groupBoxParameters.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBoxParameters.Size = new System.Drawing.Size(607, 370);
             this.groupBoxParameters.TabIndex = 1;
             this.groupBoxParameters.TabStop = false;
             this.groupBoxParameters.Text = "Входные параметры";
             // 
+            // buttonExportSTL
+            // 
+            this.buttonExportSTL.Location = new System.Drawing.Point(1204, 320);
+            this.buttonExportSTL.Name = "buttonExportSTL";
+            this.buttonExportSTL.Size = new System.Drawing.Size(27, 43);
+            this.buttonExportSTL.TabIndex = 23;
+            this.buttonExportSTL.Text = "Построить и сохранить в формате .stl";
+            this.buttonExportSTL.UseVisualStyleBackColor = true;
+            this.buttonExportSTL.Visible = false;
+            this.buttonExportSTL.Click += new System.EventHandler(this.buttonExportSTL_Click);
+            // 
             // labelLimitNumberOfEdges
             // 
             this.labelLimitNumberOfEdges.AutoSize = true;
-            this.labelLimitNumberOfEdges.Location = new System.Drawing.Point(341, 192);
+            this.labelLimitNumberOfEdges.Location = new System.Drawing.Point(455, 236);
+            this.labelLimitNumberOfEdges.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLimitNumberOfEdges.Name = "labelLimitNumberOfEdges";
-            this.labelLimitNumberOfEdges.Size = new System.Drawing.Size(35, 13);
+            this.labelLimitNumberOfEdges.Size = new System.Drawing.Size(44, 16);
             this.labelLimitNumberOfEdges.TabIndex = 22;
             this.labelLimitNumberOfEdges.Text = "label1";
             // 
             // labelLimitHeightUpperEdge
             // 
             this.labelLimitHeightUpperEdge.AutoSize = true;
-            this.labelLimitHeightUpperEdge.Location = new System.Drawing.Point(341, 166);
+            this.labelLimitHeightUpperEdge.Location = new System.Drawing.Point(455, 204);
+            this.labelLimitHeightUpperEdge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLimitHeightUpperEdge.Name = "labelLimitHeightUpperEdge";
-            this.labelLimitHeightUpperEdge.Size = new System.Drawing.Size(35, 13);
+            this.labelLimitHeightUpperEdge.Size = new System.Drawing.Size(44, 16);
             this.labelLimitHeightUpperEdge.TabIndex = 21;
             this.labelLimitHeightUpperEdge.Text = "label1";
             // 
             // labelLimitThicknessUpperEdge
             // 
             this.labelLimitThicknessUpperEdge.AutoSize = true;
-            this.labelLimitThicknessUpperEdge.Location = new System.Drawing.Point(341, 140);
+            this.labelLimitThicknessUpperEdge.Location = new System.Drawing.Point(455, 172);
+            this.labelLimitThicknessUpperEdge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLimitThicknessUpperEdge.Name = "labelLimitThicknessUpperEdge";
-            this.labelLimitThicknessUpperEdge.Size = new System.Drawing.Size(35, 13);
+            this.labelLimitThicknessUpperEdge.Size = new System.Drawing.Size(44, 16);
             this.labelLimitThicknessUpperEdge.TabIndex = 20;
             this.labelLimitThicknessUpperEdge.Text = "label1";
             // 
             // labelLimitThicknessLowerEdge
             // 
             this.labelLimitThicknessLowerEdge.AutoSize = true;
-            this.labelLimitThicknessLowerEdge.Location = new System.Drawing.Point(341, 114);
+            this.labelLimitThicknessLowerEdge.Location = new System.Drawing.Point(455, 140);
+            this.labelLimitThicknessLowerEdge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLimitThicknessLowerEdge.Name = "labelLimitThicknessLowerEdge";
-            this.labelLimitThicknessLowerEdge.Size = new System.Drawing.Size(35, 13);
+            this.labelLimitThicknessLowerEdge.Size = new System.Drawing.Size(44, 16);
             this.labelLimitThicknessLowerEdge.TabIndex = 19;
             this.labelLimitThicknessLowerEdge.Text = "label1";
             // 
             // labelLimitHeightBottom
             // 
             this.labelLimitHeightBottom.AutoSize = true;
-            this.labelLimitHeightBottom.Location = new System.Drawing.Point(341, 88);
+            this.labelLimitHeightBottom.Location = new System.Drawing.Point(455, 108);
+            this.labelLimitHeightBottom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLimitHeightBottom.Name = "labelLimitHeightBottom";
-            this.labelLimitHeightBottom.Size = new System.Drawing.Size(35, 13);
+            this.labelLimitHeightBottom.Size = new System.Drawing.Size(44, 16);
             this.labelLimitHeightBottom.TabIndex = 18;
             this.labelLimitHeightBottom.Text = "label1";
             // 
             // labelLimitRadius
             // 
             this.labelLimitRadius.AutoSize = true;
-            this.labelLimitRadius.Location = new System.Drawing.Point(341, 62);
+            this.labelLimitRadius.Location = new System.Drawing.Point(455, 76);
+            this.labelLimitRadius.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLimitRadius.Name = "labelLimitRadius";
-            this.labelLimitRadius.Size = new System.Drawing.Size(35, 13);
+            this.labelLimitRadius.Size = new System.Drawing.Size(44, 16);
             this.labelLimitRadius.TabIndex = 17;
             this.labelLimitRadius.Text = "label1";
             // 
             // labelLimitHeightTotal
             // 
             this.labelLimitHeightTotal.AutoSize = true;
-            this.labelLimitHeightTotal.Location = new System.Drawing.Point(341, 36);
+            this.labelLimitHeightTotal.Location = new System.Drawing.Point(455, 44);
+            this.labelLimitHeightTotal.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLimitHeightTotal.Name = "labelLimitHeightTotal";
-            this.labelLimitHeightTotal.Size = new System.Drawing.Size(35, 13);
+            this.labelLimitHeightTotal.Size = new System.Drawing.Size(44, 16);
             this.labelLimitHeightTotal.TabIndex = 16;
             this.labelLimitHeightTotal.Text = "label1";
             // 
             // textBoxError
             // 
-            this.textBoxError.Location = new System.Drawing.Point(9, 252);
-            this.textBoxError.Margin = new System.Windows.Forms.Padding(2);
+            this.textBoxError.Location = new System.Drawing.Point(12, 310);
+            this.textBoxError.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxError.Multiline = true;
             this.textBoxError.Name = "textBoxError";
-            this.textBoxError.Size = new System.Drawing.Size(440, 38);
+            this.textBoxError.Size = new System.Drawing.Size(585, 46);
             this.textBoxError.TabIndex = 15;
             this.textBoxError.Text = "Поле для ошибок.";
             // 
             // buttonBuildFacetedGlass
             // 
-            this.buttonBuildFacetedGlass.Location = new System.Drawing.Point(9, 218);
+            this.buttonBuildFacetedGlass.Location = new System.Drawing.Point(12, 268);
+            this.buttonBuildFacetedGlass.Margin = new System.Windows.Forms.Padding(4);
             this.buttonBuildFacetedGlass.Name = "buttonBuildFacetedGlass";
-            this.buttonBuildFacetedGlass.Size = new System.Drawing.Size(440, 29);
+            this.buttonBuildFacetedGlass.Size = new System.Drawing.Size(585, 37);
             this.buttonBuildFacetedGlass.TabIndex = 14;
-            this.buttonBuildFacetedGlass.Text = "Построить гранёный стакан\r\n";
+            this.buttonBuildFacetedGlass.Text = "Построить ";
             this.buttonBuildFacetedGlass.UseVisualStyleBackColor = true;
             this.buttonBuildFacetedGlass.Click += new System.EventHandler(this.buttonBuildFacetedGlass_Click);
             // 
             // labelNumberOfEdge
             // 
             this.labelNumberOfEdge.AutoSize = true;
-            this.labelNumberOfEdge.Location = new System.Drawing.Point(6, 192);
+            this.labelNumberOfEdge.Location = new System.Drawing.Point(8, 236);
+            this.labelNumberOfEdge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelNumberOfEdge.Name = "labelNumberOfEdge";
-            this.labelNumberOfEdge.Size = new System.Drawing.Size(104, 13);
+            this.labelNumberOfEdge.Size = new System.Drawing.Size(134, 16);
             this.labelNumberOfEdge.TabIndex = 13;
             this.labelNumberOfEdge.Text = "Количество граней";
             // 
             // labelHeightUpperEdge
             // 
             this.labelHeightUpperEdge.AutoSize = true;
-            this.labelHeightUpperEdge.Location = new System.Drawing.Point(6, 166);
+            this.labelHeightUpperEdge.Location = new System.Drawing.Point(8, 204);
+            this.labelHeightUpperEdge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelHeightUpperEdge.Name = "labelHeightUpperEdge";
-            this.labelHeightUpperEdge.Size = new System.Drawing.Size(219, 13);
+            this.labelHeightUpperEdge.Size = new System.Drawing.Size(278, 16);
             this.labelHeightUpperEdge.TabIndex = 12;
             this.labelHeightUpperEdge.Text = "Высота верхней грани (height_UpperEdge)";
             // 
             // labelThicknessUpperEdge
             // 
             this.labelThicknessUpperEdge.AutoSize = true;
-            this.labelThicknessUpperEdge.Location = new System.Drawing.Point(6, 140);
+            this.labelThicknessUpperEdge.Location = new System.Drawing.Point(8, 172);
+            this.labelThicknessUpperEdge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelThicknessUpperEdge.Name = "labelThicknessUpperEdge";
-            this.labelThicknessUpperEdge.Size = new System.Drawing.Size(249, 13);
+            this.labelThicknessUpperEdge.Size = new System.Drawing.Size(315, 16);
             this.labelThicknessUpperEdge.TabIndex = 11;
             this.labelThicknessUpperEdge.Text = "Толщина верхней стенки (thickness_UpperEdge)";
             // 
             // labelThicknessLowerEdge
             // 
             this.labelThicknessLowerEdge.AutoSize = true;
-            this.labelThicknessLowerEdge.Location = new System.Drawing.Point(6, 114);
+            this.labelThicknessLowerEdge.Location = new System.Drawing.Point(8, 140);
+            this.labelThicknessLowerEdge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelThicknessLowerEdge.Name = "labelThicknessLowerEdge";
-            this.labelThicknessLowerEdge.Size = new System.Drawing.Size(246, 13);
+            this.labelThicknessLowerEdge.Size = new System.Drawing.Size(308, 16);
             this.labelThicknessLowerEdge.TabIndex = 10;
             this.labelThicknessLowerEdge.Text = "Толщина нижней стенки (thickness_LowerEdge)\r\n";
             // 
             // labelHeightBottom
             // 
             this.labelHeightBottom.AutoSize = true;
-            this.labelHeightBottom.Location = new System.Drawing.Point(6, 88);
+            this.labelHeightBottom.Location = new System.Drawing.Point(8, 108);
+            this.labelHeightBottom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelHeightBottom.Name = "labelHeightBottom";
-            this.labelHeightBottom.Size = new System.Drawing.Size(143, 13);
+            this.labelHeightBottom.Size = new System.Drawing.Size(178, 16);
             this.labelHeightBottom.TabIndex = 9;
             this.labelHeightBottom.Text = "Высота дна (height_Bottom)";
             // 
             // textBoxNumberOfEdge
             // 
-            this.textBoxNumberOfEdge.Location = new System.Drawing.Point(262, 189);
+            this.textBoxNumberOfEdge.Location = new System.Drawing.Point(349, 233);
+            this.textBoxNumberOfEdge.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxNumberOfEdge.Name = "textBoxNumberOfEdge";
-            this.textBoxNumberOfEdge.Size = new System.Drawing.Size(73, 20);
+            this.textBoxNumberOfEdge.Size = new System.Drawing.Size(96, 22);
             this.textBoxNumberOfEdge.TabIndex = 8;
             this.textBoxNumberOfEdge.TextChanged += new System.EventHandler(this.textBoxNumberOfEdge_Leave);
             // 
             // textBoxHeightUpperEdge
             // 
-            this.textBoxHeightUpperEdge.Location = new System.Drawing.Point(262, 163);
+            this.textBoxHeightUpperEdge.Location = new System.Drawing.Point(349, 201);
+            this.textBoxHeightUpperEdge.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxHeightUpperEdge.Name = "textBoxHeightUpperEdge";
-            this.textBoxHeightUpperEdge.Size = new System.Drawing.Size(73, 20);
+            this.textBoxHeightUpperEdge.Size = new System.Drawing.Size(96, 22);
             this.textBoxHeightUpperEdge.TabIndex = 7;
             this.textBoxHeightUpperEdge.TextChanged += new System.EventHandler(this.textBoxHeightUpperEdge_Leave);
             // 
             // textBoxThicknessUpperEdge
             // 
-            this.textBoxThicknessUpperEdge.Location = new System.Drawing.Point(262, 137);
+            this.textBoxThicknessUpperEdge.Location = new System.Drawing.Point(349, 169);
+            this.textBoxThicknessUpperEdge.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxThicknessUpperEdge.Name = "textBoxThicknessUpperEdge";
-            this.textBoxThicknessUpperEdge.Size = new System.Drawing.Size(73, 20);
+            this.textBoxThicknessUpperEdge.Size = new System.Drawing.Size(96, 22);
             this.textBoxThicknessUpperEdge.TabIndex = 6;
             this.textBoxThicknessUpperEdge.TextChanged += new System.EventHandler(this.textBoxThicknessUpperEdge_Leave);
             // 
             // textBoxThicknessLowerEdge
             // 
-            this.textBoxThicknessLowerEdge.Location = new System.Drawing.Point(262, 111);
+            this.textBoxThicknessLowerEdge.Location = new System.Drawing.Point(349, 137);
+            this.textBoxThicknessLowerEdge.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxThicknessLowerEdge.Name = "textBoxThicknessLowerEdge";
-            this.textBoxThicknessLowerEdge.Size = new System.Drawing.Size(73, 20);
+            this.textBoxThicknessLowerEdge.Size = new System.Drawing.Size(96, 22);
             this.textBoxThicknessLowerEdge.TabIndex = 5;
             this.textBoxThicknessLowerEdge.TextChanged += new System.EventHandler(this.textBoxThicknessLowerEdge_Leave);
             // 
             // textBoxHeightBottom
             // 
-            this.textBoxHeightBottom.Location = new System.Drawing.Point(262, 85);
+            this.textBoxHeightBottom.Location = new System.Drawing.Point(349, 105);
+            this.textBoxHeightBottom.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxHeightBottom.Name = "textBoxHeightBottom";
-            this.textBoxHeightBottom.Size = new System.Drawing.Size(73, 20);
+            this.textBoxHeightBottom.Size = new System.Drawing.Size(96, 22);
             this.textBoxHeightBottom.TabIndex = 4;
             this.textBoxHeightBottom.TextChanged += new System.EventHandler(this.textBoxHeightBottom_Leave);
             // 
             // textBoxRadius
             // 
-            this.textBoxRadius.Location = new System.Drawing.Point(262, 59);
+            this.textBoxRadius.Location = new System.Drawing.Point(349, 73);
+            this.textBoxRadius.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxRadius.Name = "textBoxRadius";
-            this.textBoxRadius.Size = new System.Drawing.Size(73, 20);
+            this.textBoxRadius.Size = new System.Drawing.Size(96, 22);
             this.textBoxRadius.TabIndex = 3;
             this.textBoxRadius.TextChanged += new System.EventHandler(this.textBoxRadius_Leave);
             // 
             // textBoxHeightTotal
             // 
-            this.textBoxHeightTotal.Location = new System.Drawing.Point(262, 33);
+            this.textBoxHeightTotal.Location = new System.Drawing.Point(349, 41);
+            this.textBoxHeightTotal.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxHeightTotal.Name = "textBoxHeightTotal";
-            this.textBoxHeightTotal.Size = new System.Drawing.Size(73, 20);
+            this.textBoxHeightTotal.Size = new System.Drawing.Size(96, 22);
             this.textBoxHeightTotal.TabIndex = 2;
             this.textBoxHeightTotal.TextChanged += new System.EventHandler(this.textBoxHeightTotal_Leave);
             // 
             // labelRadius
             // 
             this.labelRadius.AutoSize = true;
-            this.labelRadius.Location = new System.Drawing.Point(6, 62);
+            this.labelRadius.Location = new System.Drawing.Point(8, 76);
+            this.labelRadius.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelRadius.Name = "labelRadius";
-            this.labelRadius.Size = new System.Drawing.Size(190, 13);
+            this.labelRadius.Size = new System.Drawing.Size(244, 16);
             this.labelRadius.TabIndex = 1;
             this.labelRadius.Text = "Радиус внешней окружности (radius)\r\n";
             // 
             // labelHeightTotal
             // 
             this.labelHeightTotal.AutoSize = true;
-            this.labelHeightTotal.Location = new System.Drawing.Point(6, 36);
+            this.labelHeightTotal.Location = new System.Drawing.Point(8, 44);
+            this.labelHeightTotal.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelHeightTotal.Name = "labelHeightTotal";
-            this.labelHeightTotal.Size = new System.Drawing.Size(157, 13);
+            this.labelHeightTotal.Size = new System.Drawing.Size(196, 16);
             this.labelHeightTotal.TabIndex = 0;
             this.labelHeightTotal.Text = "Высота стакана (height_Total)";
             // 
             // GUI
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(934, 311);
+            this.ClientSize = new System.Drawing.Size(1243, 373);
+            this.Controls.Add(this.buttonExportSTL);
             this.Controls.Add(this.groupBoxParameters);
             this.Controls.Add(this.pictureBoxMainMenu);
-            this.MaximumSize = new System.Drawing.Size(950, 350);
-            this.MinimumSize = new System.Drawing.Size(950, 350);
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximumSize = new System.Drawing.Size(1261, 420);
+            this.MinimumSize = new System.Drawing.Size(1261, 420);
             this.Name = "GUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Построитель гранёного стакана";
@@ -348,6 +387,7 @@
         private System.Windows.Forms.Label labelLimitHeightBottom;
         private System.Windows.Forms.Label labelLimitRadius;
         private System.Windows.Forms.Label labelLimitHeightTotal;
+        private System.Windows.Forms.Button buttonExportSTL;
     }
 }
 

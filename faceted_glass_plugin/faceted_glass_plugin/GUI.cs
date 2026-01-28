@@ -623,7 +623,44 @@ namespace faceted_glass_plugin
             {
                 buttonBuildFacetedGlass.Enabled = true;
             }
-
         }
+
+        private void buttonExportSTL_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveDialog = new SaveFileDialog())
+            {
+                saveDialog.Filter = "STL files (*.stl)|*.stl";
+                saveDialog.DefaultExt = "stl";
+                saveDialog.FileName = "faceted_glass.stl";
+                saveDialog.Title = "Экспорт модели в STL";
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        Cursor.Current = Cursors.WaitCursor;
+
+                        // Используем новый метод для построения и экспорта
+                        _builder.BuildAndExportToStl(_parameters, saveDialog.FileName);
+
+                        Cursor.Current = Cursors.Default;
+
+                        MessageBox.Show($"Модель успешно экспортирована в:\n{saveDialog.FileName}",
+                            "Успешный экспорт",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        Cursor.Current = Cursors.Default;
+                        MessageBox.Show($"Ошибка экспорта: {ex.Message}",
+                            "Ошибка",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
     }
 }
