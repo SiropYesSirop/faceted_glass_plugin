@@ -1,8 +1,9 @@
-﻿using Core;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Reflection;
+using Core;
+
 
 namespace GlassPlugin.Tests
 {

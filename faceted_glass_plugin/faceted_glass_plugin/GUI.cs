@@ -14,7 +14,6 @@ using System.Windows.Forms;
 
 namespace faceted_glass_plugin
 {
-    //TODO: RSDN +
     public partial class GUI : Form
     {
         /// <summary>
@@ -27,35 +26,42 @@ namespace faceted_glass_plugin
         /// </summary>
         private Parameters _parameters;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее значение радиуса стакана
         /// </summary>
         private double _radiusCurrent;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее значение высоты дна стакана
         /// </summary>
         private double _heightBottomCurrent;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее значение толщины верхней стенки стакана
         /// </summary>
         private double _thicknessUpperEdgeCurrent;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее значение высоты верхней стенки стакана
         /// </summary>
         private double _heightUpperEdgeCurrent;
 
-        //TODO: RSDN +
         /// <summary>
         /// Текущее количетства граней стакана
         /// </summary>
         private double _numberOfEdgeCurrent;
+
+        //TODO: refactor +
+        /// <summary>
+        /// Словарь сообщений об ошибках для параметров
+        /// </summary>
+        private Dictionary<ParameterType, string> _errorMessages;
+
+        //TODO: refactor +
+        /// <summary>
+        /// Список связок параметров с элементами управления
+        /// </summary>
+        private List<ParameterControlBinding> _parameterBindings;
 
         /// <summary>
         /// Конструктор формы GUI
@@ -63,6 +69,45 @@ namespace faceted_glass_plugin
         public GUI()
         {
             InitializeComponent();
+            InitializeErrorMessages();
+        }
+
+        //TODO: refactor +
+        /// <summary>
+        /// Инициализирует словарь сообщений об ошибках
+        /// </summary>
+        private void InitializeErrorMessages()
+        {
+            _errorMessages = new Dictionary<ParameterType, string>
+            {
+                [ParameterType.HeightTotal] = "Неверно введено значение" +
+                    " в поле 'Общая высота'!",
+                [ParameterType.Radius] = "Неверно введено значение" +
+                    " в поле 'Радиус'!",
+                [ParameterType.HeightBottom] = "Неверно введено значение" +
+                    " в поле 'Высота дна'!",
+                [ParameterType.ThicknessLowerEdge] = "Неверно введено" +
+                    " значение в поле 'Толщина нижней стенки'!",
+                [ParameterType.ThicknessUpperEdge] = "Неверно введено" +
+                    " значение в поле 'Толщина верхней стенки'!",
+                [ParameterType.HeightUpperEdge] = "Неверно введено " +
+                    "значение в поле 'Высота верхней стенки'!",
+                [ParameterType.NumberOfEdge] = "Неверно введено значение" +
+                    " в поле 'Количество граней'!"
+            };
+        }
+
+        //TODO: refactor +
+        /// <summary>
+        /// Класс для связки параметра с элементами управления
+        /// </summary>
+        private class ParameterControlBinding
+        {
+            public ParameterType Type { get; set; }
+            public TextBox TextBox { get; set; }
+            public Label LimitLabel { get; set; }
+            public Label ErrorLabel { get; set; }
+            public double CurrentValue { get; set; }
         }
 
         /// <summary>
@@ -73,56 +118,153 @@ namespace faceted_glass_plugin
             _parameters = new Parameters();
             _builder = new GlassBuilder();
 
-            //TODO: RSDN +
-            var heightTotalParam = _parameters.NumericalParameters
-                [ParameterType.HeightTotal];
-            labelLimitHeightTotal.Text = $"от {heightTotalParam.MinValue:F1}" +
-                $" до " + $"{heightTotalParam.MaxValue:F1} мм";
-            var radiusParam = _parameters.NumericalParameters
-                [ParameterType.Radius];
-            labelLimitRadius.Text = $"от {radiusParam.MinValue:F1} " +
-                $"до {radiusParam.MaxValue:F1} мм";
-            var heightBottomParam = _parameters.NumericalParameters
-                [ParameterType.HeightBottom];
-            labelLimitHeightBottom.Text = $"от " +
-                $"{heightBottomParam.MinValue:F1}" +
-                    $" до {heightBottomParam.MaxValue:F1} мм";
-            var thicknessLowerEdgeParam = _parameters.NumericalParameters
-                [ParameterType.ThicknessLowerEdge];
-            labelLimitThicknessLowerEdge.Text = $"от" +
-                $" {thicknessLowerEdgeParam.MinValue:F1}" +
-                    $" до {thicknessLowerEdgeParam.MaxValue:F1} мм";
-            var thicknessUpperEdgeParam = _parameters.NumericalParameters
-                [ParameterType.ThicknessUpperEdge];
-            labelLimitThicknessUpperEdge.Text = $"от " +
-                $"{thicknessUpperEdgeParam.MinValue:F1}" +
-                    $" до {thicknessUpperEdgeParam.MaxValue:F1} мм";
-            var heightUpperEdgeParam = _parameters.NumericalParameters
-                [ParameterType.HeightUpperEdge];
-            labelLimitHeightUpperEdge.Text = $"от " +
-                $"{heightUpperEdgeParam.MinValue:F1} до " +
-                    $"{heightUpperEdgeParam.MaxValue:F1} мм";
-            var numberOfEdgeParam = _parameters.NumericalParameters
-                [ParameterType.NumberOfEdge];
-            labelLimitNumberOfEdges.Text = $"от " +
-                $"{numberOfEdgeParam.MinValue:F1} до" +
-                    $" {numberOfEdgeParam.MaxValue:F1} шт.";
+            InitializeParameterBindings();
+            UpdateAllLabels();
+            SetInitialTextValues();
+            InitializeEdgeTypeComboBox();
+        }
 
-            //TODO: from parameters +
-            textBoxHeightTotal.Text = heightTotalParam
-                .Value.ToString();
-            textBoxRadius.Text = radiusParam
-                .Value.ToString();
-            textBoxHeightBottom.Text = heightBottomParam
-                .Value.ToString();
-            textBoxThicknessLowerEdge.Text = thicknessLowerEdgeParam
-                .Value.ToString();
-            textBoxThicknessUpperEdge.Text = thicknessUpperEdgeParam
-                .Value.ToString();
-            textBoxHeightUpperEdge.Text = heightUpperEdgeParam
-                .Value.ToString();
-            textBoxNumberOfEdge.Text = numberOfEdgeParam
-                .Value.ToString();
+        /// <summary>
+        /// Инициализация ComboBox для выбора типа грани
+        /// </summary>
+        private void InitializeEdgeTypeComboBox()
+        {
+            // Устанавливаем выбранный тип из параметров
+            switch (_parameters.EdgeType)
+            {
+                case EdgeType.Rectangular:
+                    comboBoxEdgeType.SelectedIndex = 0;
+                    break;
+                case EdgeType.Oval:
+                    comboBoxEdgeType.SelectedIndex = 1;
+                    break;
+                case EdgeType.Trapezoidal:
+                    comboBoxEdgeType.SelectedIndex = 2;
+                    break;
+                default:
+                    comboBoxEdgeType.SelectedIndex = 0;
+                    _parameters.EdgeType = EdgeType.Rectangular;
+                    break;
+            }
+
+            // Подписываемся на событие изменения выбора
+            comboBoxEdgeType.SelectedIndexChanged += comboBoxEdgeType_SelectedIndexChanged;
+        }
+
+
+        //TODO: refactor +
+        /// <summary>
+        /// Инициализирует связки параметров с элементами управления
+        /// </summary>
+        private void InitializeParameterBindings()
+        {
+            _parameterBindings = new List<ParameterControlBinding>
+            {
+                new ParameterControlBinding
+                {
+                    Type = ParameterType.HeightTotal,
+                    TextBox = textBoxHeightTotal,
+                    LimitLabel = labelLimitHeightTotal,
+                    ErrorLabel = labelHeightTotal,
+                    CurrentValue = 0
+                },
+                new ParameterControlBinding
+                {
+                    Type = ParameterType.Radius,
+                    TextBox = textBoxRadius,
+                    LimitLabel = labelLimitRadius,
+                    ErrorLabel = labelRadius,
+                    CurrentValue = 0
+                },
+                new ParameterControlBinding
+                {
+                    Type = ParameterType.HeightBottom,
+                    TextBox = textBoxHeightBottom,
+                    LimitLabel = labelLimitHeightBottom,
+                    ErrorLabel = labelHeightBottom,
+                    CurrentValue = 0
+                },
+                new ParameterControlBinding
+                {
+                    Type = ParameterType.ThicknessLowerEdge,
+                    TextBox = textBoxThicknessLowerEdge,
+                    LimitLabel = labelLimitThicknessLowerEdge,
+                    ErrorLabel = labelThicknessLowerEdge,
+                    CurrentValue = 0
+                },
+                new ParameterControlBinding
+                {
+                    Type = ParameterType.ThicknessUpperEdge,
+                    TextBox = textBoxThicknessUpperEdge,
+                    LimitLabel = labelLimitThicknessUpperEdge,
+                    ErrorLabel = labelThicknessUpperEdge,
+                    CurrentValue = 0
+                },
+                new ParameterControlBinding
+                {
+                    Type = ParameterType.HeightUpperEdge,
+                    TextBox = textBoxHeightUpperEdge,
+                    LimitLabel = labelLimitHeightUpperEdge,
+                    ErrorLabel = labelHeightUpperEdge,
+                    CurrentValue = 0
+                },
+                new ParameterControlBinding
+                {
+                    Type = ParameterType.NumberOfEdge,
+                    TextBox = textBoxNumberOfEdge,
+                    LimitLabel = labelLimitNumberOfEdges,
+                    ErrorLabel = labelNumberOfEdge,
+                    CurrentValue = 0
+                }
+            };
+        }
+
+        //TODO: refactor +
+        /// <summary>
+        /// Обновляет все метки с ограничениями параметров
+        /// </summary>
+        private void UpdateAllLabels()
+        {
+            foreach (var binding in _parameterBindings)
+            {
+                var param = _parameters.NumericalParameters[binding.Type];
+                string unit = binding.Type ==
+                    ParameterType.NumberOfEdge ? "шт." : "мм";
+                binding.LimitLabel.Text =
+                    $"от {param.MinValue:F1} до {param.MaxValue:F1} {unit}";
+            }
+        }
+
+        //TODO: refactor +
+        /// <summary>
+        /// Устанавливает начальные значения в текстовые поля
+        /// </summary>
+        private void SetInitialTextValues()
+        {
+            foreach (var binding in _parameterBindings)
+            {
+                var param = _parameters.NumericalParameters[binding.Type];
+                binding.TextBox.Text = param.Value.ToString();
+
+                switch (binding.Type)
+                {
+                    case ParameterType.Radius:
+                        _radiusCurrent = param.Value;
+                        break;
+                    case ParameterType.HeightBottom:
+                        _heightBottomCurrent = param.Value;
+                        break;
+                    case ParameterType.ThicknessUpperEdge:
+                        _thicknessUpperEdgeCurrent = param.Value;
+                        break;
+                    case ParameterType.HeightUpperEdge:
+                        _heightUpperEdgeCurrent = param.Value;
+                        break;
+                    case ParameterType.NumberOfEdge:
+                        _numberOfEdgeCurrent = param.Value;
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -135,16 +277,16 @@ namespace faceted_glass_plugin
                 try
                 {
                     _builder.BuildFacetedGlass(_parameters);
-                    labelHeightTotal.ForeColor = Color.Black;
-                    labelRadius.ForeColor = Color.Black;
-                    labelHeightBottom.ForeColor = Color.Black;
-                    labelThicknessLowerEdge.ForeColor = Color.Black;
-                    labelThicknessUpperEdge.ForeColor = Color.Black;
-                    labelHeightUpperEdge.ForeColor = Color.Black;
-                    labelNumberOfEdge.ForeColor = Color.Black;
+
+                    foreach (var binding in _parameterBindings)
+                    {
+                        binding.ErrorLabel.ForeColor = Color.Black;
+                    }
+
                     MessageBox.Show("Построение гранёного стакана начато!",
                         "Информация",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBoxButtons.OK, MessageBoxIcon.
+                                Information);
                 }
                 catch (Exception)
                 {
@@ -160,85 +302,101 @@ namespace faceted_glass_plugin
 
         }
 
+        //TODO: refactor +
         /// <summary>
         /// Проверка заполненности всех параметров
         /// </summary>
         /// <returns>TRUE, если все параметры заполнены корректно</returns>
         private bool CheckAll()
         {
+            var invalidParameters = new List<ParameterType>();
+
+            foreach (var parameter in _parameters.NumericalParameters)
+            {
+                if (parameter.Value.Value == 0)
+                {
+                    invalidParameters.Add(parameter.Key);
+                }
+            }
+
+            if (invalidParameters.Any())
+            {
+                DisplayErrors(invalidParameters);
+                return false;
+            }
+
+            return true;
+        }
+
+        //TODO: refactor +
+        /// <summary>
+        /// Отображает ошибки для некорректных параметров
+        /// </summary>
+        /// <param name="invalidParameters">Список некорректных
+        /// параметров</param>
+        private void DisplayErrors(List<ParameterType> invalidParameters)
+        {
+            textBoxError.Text = "";
+
+            foreach (var paramType in invalidParameters)
+            {
+                if (_errorMessages.ContainsKey(paramType))
+                {
+                    textBoxError.Text += _errorMessages[paramType] + "\n";
+                }
+            }
+        }
+
+        //TODO: refactor +
+        /// <summary>
+        /// Общий обработчик потери фокуса для числовых параметров
+        /// </summary>
+        /// <param name="sender">Источник события</param>
+        /// <param name="paramType">Тип параметра</param>
+        /// <param name="currentValue">Ссылка на поле с текущим 
+        /// значением</param>
+        /// <param name="label">Связанная метка</param>
+        private void NumericParameter_Leave(object sender,
+            ParameterType paramType, ref double currentValue, Label label)
+        {
             try
             {
-                foreach (var parameter in _parameters.NumericalParameters)
+                textBoxError.Text = "";
+                TextBox textBox = (TextBox)sender;
+
+                if (textBox.Text != "")
                 {
-                    if (parameter.Value.Value == 0)
+                    double value = 0;
+                    if (double.TryParse(textBox.Text, out value)
+                        && value != 0)
                     {
-                        throw new Exception(parameter.Key.
-                            ToString() + "_null");
+                        _parameters.NumericalParameters[paramType].Value
+                            = value;
+                        currentValue = value;
+                        textBox.ForeColor = Color.Black;
+                        label.ForeColor = Color.Black;
+                        CheckParametersBeforeBuilding();
+                    }
+                    else
+                    {
+                        textBoxError.Text += $"В поле" +
+                            $" '{label.Text.Replace(":", "")}' " +
+                            $"было введено некорректное значение!\n";
                     }
                 }
-                return true;
+                else
+                {
+                    if (currentValue != 0)
+                    {
+                        textBox.Text = currentValue.ToString();
+                    }
+                }
             }
             catch (Exception ex)
             {
-                switch (ex.Message)
-                {
-                    //TODO: {} +
-                    case "HeightTotal_null":
-                        if (textBoxError != null)
-                        {
-                            textBoxError.Text += "";
-                            textBoxError.Text += " Неверно введено значение" +
-                            " в поле 'Общая высота'!\n";
-                        }
-                        break;
-                    case "Radius_null":
-                        if (textBoxError != null)
-                        {
-                            textBoxError.Text += " Неверно введено значение" +
-                                " в поле 'Радиус'!\n";
-                            textBoxError.Text += "";
-                        }
-                        break;
-                    case "HeightBottom_null":
-                        if (textBoxError != null)
-                            textBoxError.Text += " Неверно введено значение" +
-                                " в поле 'Высота дна'!\n";
-                        textBoxError.Text += "";
-                        break;
-                    case "ThicknessLowerEdge_null":
-                        if (textBoxError != null)
-                        {
-                            textBoxError.Text += " Неверно введено значение" +
-                                " в поле 'Толщина нижней стенки'!\n";
-                            textBoxError.Text += "";
-                        }
-                        break;
-                    case "ThicknessUpperEdge_null":
-                        if (textBoxError != null)
-                        {
-                            textBoxError.Text += " Неверно введено значение" +
-                                " в поле 'Толщина верхней стенки'!\n";
-                            textBoxError.Text += "";
-                        }
-                        break;
-                    case "HeightUpperEdge_null":
-                        if (textBoxError != null)
-                        {
-                            textBoxError.Text += "Неверно введено значение" +
-                                " в поле 'Высота верхней стенки'!\n";
-                            textBoxError.Text += "";
-                        }
-                        break;
-                    case "NumberOfEdge_null":
-                        if (textBoxError != null)
-                        {
-                            textBoxError.Text += "Неверно введено значение" +
-                                " в поле 'Количество граней'!\n";
-                            textBoxError.Text += "";
-                        }
-                        break;
-                }
-                return false;
+                ((TextBox)sender).ForeColor = Color.Red;
+                CheckParametersBeforeBuilding();
+                textBoxError.Text += $"Ошибка при вводе: {ex.Message}\n";
             }
         }
 
@@ -247,44 +405,8 @@ namespace faceted_glass_plugin
         /// </summary>
         private void textBoxNumberOfEdge_Leave(object sender, EventArgs e)
         {
-            try
-            {
-                textBoxError.Text = "";
-                if (textBoxNumberOfEdge.Text != "")
-                {
-                    double value = 0;
-                    if (double.TryParse(textBoxNumberOfEdge.Text,
-                        out value) && value != 0)
-                    {
-                        _parameters.NumericalParameters
-                            [ParameterType.NumberOfEdge].Value = value;
-                        _numberOfEdgeCurrent = value;
-                        textBoxNumberOfEdge.ForeColor = Color.Black;
-                        labelNumberOfEdge.ForeColor = Color.Black;
-                        CheckParametersBeforeBuilding();
-                    }
-                    else
-                    {
-                        textBoxError.Text += $"В поле 'Количество граней'" +
-                            $" было введено некорректное значение!\n";
-                    }
-                }
-                else
-                {
-                    if (_numberOfEdgeCurrent != 0)
-                    {
-                        textBoxNumberOfEdge.Text =
-                            _numberOfEdgeCurrent.ToString();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                textBoxNumberOfEdge.ForeColor = Color.Red;
-                CheckParametersBeforeBuilding();
-                textBoxError.Text += $"Ошибка при вводе количества" +
-                    $" граней: {ex.Message}\n";
-            }
+            NumericParameter_Leave(sender, ParameterType.NumberOfEdge,
+                ref _numberOfEdgeCurrent, labelNumberOfEdge);
         }
 
         /// <summary>
@@ -292,90 +414,17 @@ namespace faceted_glass_plugin
         /// </summary>
         private void textBoxHeightUpperEdge_Leave(object sender, EventArgs e)
         {
-            try
-            {
-                textBoxError.Text = "";
-                if (textBoxHeightUpperEdge.Text != "")
-                {
-                    double value = 0;
-                    if (double.TryParse(textBoxHeightUpperEdge.Text,
-                        out value) && value != 0)
-                    {
-                        _parameters.NumericalParameters
-                            [ParameterType.HeightUpperEdge].Value = value;
-                        _heightUpperEdgeCurrent = value;
-                        textBoxHeightUpperEdge.ForeColor = Color.Black;
-                        labelHeightUpperEdge.ForeColor = Color.Black;
-                        CheckParametersBeforeBuilding();
-                    }
-                    else
-                    {
-                        textBoxError.Text += $"В поле 'Высота верхней " +
-                            $"стенки' было введено некорректное значение!\n";
-                    }
-                }
-                else
-                {
-                    if (_heightUpperEdgeCurrent != 0)
-                    {
-                        textBoxHeightUpperEdge.Text =
-                            _heightUpperEdgeCurrent.ToString();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                textBoxHeightUpperEdge.ForeColor = Color.Red;
-                CheckParametersBeforeBuilding();
-                textBoxError.Text += $"Ошибка при вводе " +
-                    $"высоты верхней стенки: {ex.Message}\n";
-            }
+            NumericParameter_Leave(sender, ParameterType.HeightUpperEdge,
+                ref _heightUpperEdgeCurrent, labelHeightUpperEdge);
         }
 
         /// <summary>
         /// Обработчик потери фокуса полем ввода толщины верхней стенки
         /// </summary>
-        private void textBoxThicknessUpperEdge_Leave(object sender,
-            EventArgs e)
+        private void textBoxThicknessUpperEdge_Leave(object sender, EventArgs e)
         {
-            try
-            {
-                textBoxError.Text = "";
-                if (textBoxThicknessUpperEdge.Text != "")
-                {
-                    double value = 0;
-                    if (double.TryParse(textBoxThicknessUpperEdge.Text,
-                        out value) && value != 0)
-                    {
-                        _parameters.NumericalParameters
-                            [ParameterType.ThicknessUpperEdge].Value = value;
-                        _thicknessUpperEdgeCurrent = value;
-                        textBoxThicknessUpperEdge.ForeColor = Color.Black;
-                        labelThicknessUpperEdge.ForeColor = Color.Black;
-                        CheckParametersBeforeBuilding();
-                    }
-                    else
-                    {
-                        textBoxError.Text += $"В поле 'Толщина верхней" +
-                            $" стенки' было введено некорректное значение!\n";
-                    }
-                }
-                else
-                {
-                    if (_thicknessUpperEdgeCurrent != 0)
-                    {
-                        textBoxThicknessUpperEdge.Text =
-                            _thicknessUpperEdgeCurrent.ToString();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                textBoxThicknessUpperEdge.ForeColor = Color.Red;
-                CheckParametersBeforeBuilding();
-                textBoxError.Text += $"Ошибка при вводе " +
-                    $"толщины верхней стенки: {ex.Message}\n";
-            }
+            NumericParameter_Leave(sender, ParameterType.ThicknessUpperEdge,
+                ref _thicknessUpperEdgeCurrent, labelThicknessUpperEdge);
         }
 
         /// <summary>
@@ -406,11 +455,13 @@ namespace faceted_glass_plugin
                     ParameterType.ThicknessUpperEdge,
                         "Толщина верхней стенки");
 
+                var binding = _parameterBindings
+                    .First(b => b.Type == ParameterType.ThicknessUpperEdge);
                 var upperParam = _parameters.NumericalParameters
                     [ParameterType.ThicknessUpperEdge];
-                labelLimitThicknessUpperEdge.Text = $"от " +
-                    $"{upperParam.MinValue:F1} до " +
-                        $"{upperParam.MaxValue:F1} мм";
+                binding.LimitLabel.Text = $"от {upperParam.MinValue:F1} до "+
+                    $"{upperParam.MaxValue:F1} мм";
+
                 CheckParametersBeforeBuilding();
             }
             catch (Exception ex)
@@ -427,44 +478,8 @@ namespace faceted_glass_plugin
         /// </summary>
         private void textBoxHeightBottom_Leave(object sender, EventArgs e)
         {
-            try
-            {
-                textBoxError.Text = "";
-                if (textBoxHeightBottom.Text != "")
-                {
-                    double value = 0;
-                    if (double.TryParse(textBoxHeightBottom.Text,
-                        out value) && value != 0)
-                    {
-                        _parameters.NumericalParameters
-                            [ParameterType.HeightBottom].Value = value;
-                        _heightBottomCurrent = value;
-                        textBoxHeightBottom.ForeColor = Color.Black;
-                        labelHeightBottom.ForeColor = Color.Black;
-                        CheckParametersBeforeBuilding();
-                    }
-                    else
-                    {
-                        textBoxError.Text += $"В поле 'Высота дна'" +
-                            $" было введено некорректное значение!\n";
-                    }
-                }
-                else
-                {
-                    if (_heightBottomCurrent != 0)
-                    {
-                        textBoxHeightBottom.Text =
-                            _heightBottomCurrent.ToString();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                textBoxHeightBottom.ForeColor = Color.Red;
-                CheckParametersBeforeBuilding();
-                textBoxError.Text += $"Ошибка при вводе " +
-                    $"высоты дна: {ex.Message}\n";
-            }
+            NumericParameter_Leave(sender, ParameterType.HeightBottom,
+                ref _heightBottomCurrent, labelHeightBottom);
         }
 
         /// <summary>
@@ -472,43 +487,8 @@ namespace faceted_glass_plugin
         /// </summary>
         private void textBoxRadius_Leave(object sender, EventArgs e)
         {
-            try
-            {
-                textBoxError.Text = "";
-                if (textBoxRadius.Text != "")
-                {
-                    double value = 0;
-                    if (double.TryParse(textBoxRadius.Text,
-                        out value) && value != 0)
-                    {
-                        _parameters.NumericalParameters
-                            [ParameterType.Radius].Value = value;
-                        _radiusCurrent = value;
-                        textBoxRadius.ForeColor = Color.Black;
-                        labelRadius.ForeColor = Color.Black;
-                        CheckParametersBeforeBuilding();
-                    }
-                    else
-                    {
-                        textBoxError.Text += $"В поле 'Радиус'" +
-                            $" было введено некорректное значение!\n";
-                    }
-                }
-                else
-                {
-                    if (_radiusCurrent != 0)
-                    {
-                        textBoxRadius.Text = _radiusCurrent.ToString();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                textBoxRadius.ForeColor = Color.Red;
-                CheckParametersBeforeBuilding();
-                textBoxError.Text += $"Ошибка при вводе" +
-                    $" радиуса: {ex.Message} \n";
-            }
+            NumericParameter_Leave(sender, ParameterType.Radius,
+                ref _radiusCurrent, labelRadius);
         }
 
         /// <summary>
@@ -522,7 +502,6 @@ namespace faceted_glass_plugin
         private void CheckDepended(object target,
             ParameterType parametertype, string target_label)
         {
-
             Control target_control = (Control)target;
             try
             {
@@ -591,9 +570,11 @@ namespace faceted_glass_plugin
                 CheckDepended(textBoxHeightUpperEdge,
                     ParameterType.HeightUpperEdge, "Высота верхней грани");
 
+                var binding = _parameterBindings
+                    .First(b => b.Type == ParameterType.HeightUpperEdge);
                 var heightUpperEdgeParam = _parameters.
                     NumericalParameters[ParameterType.HeightUpperEdge];
-                labelLimitHeightUpperEdge.Text = $"от " +
+                binding.LimitLabel.Text = $"от " +
                     $"{heightUpperEdgeParam.MinValue:F1} до " +
                         $"{heightUpperEdgeParam.MaxValue:F1} мм";
             }
@@ -606,61 +587,36 @@ namespace faceted_glass_plugin
             }
         }
 
-        //TODO: RSDN +
+        /// <summary>
+        /// Проверяет корректность параметров перед построением
+        /// и управляет доступностью кнопки
+        /// </summary>
         private void CheckParametersBeforeBuilding()
         {
-            if (textBoxHeightTotal.ForeColor == Color.Red
-                || textBoxRadius.ForeColor == Color.Red
-                || textBoxHeightBottom.ForeColor == Color.Red
-                || textBoxThicknessLowerEdge.ForeColor == Color.Red
-                || textBoxThicknessUpperEdge.ForeColor == Color.Red
-                || textBoxHeightUpperEdge.ForeColor == Color.Red
-                || textBoxNumberOfEdge.ForeColor == Color.Red)
-            {
-                buttonBuildFacetedGlass.Enabled = false;
-            }
-            else
-            {
-                buttonBuildFacetedGlass.Enabled = true;
-            }
+            buttonBuildFacetedGlass.Enabled = !_parameterBindings
+                .Any(b => b.TextBox.ForeColor == Color.Red);
         }
 
-        private void buttonExportSTL_Click(object sender, EventArgs e)
+        private void comboBoxEdgeType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (SaveFileDialog saveDialog = new SaveFileDialog())
+            switch (comboBoxEdgeType.SelectedIndex)
             {
-                saveDialog.Filter = "STL files (*.stl)|*.stl";
-                saveDialog.DefaultExt = "stl";
-                saveDialog.FileName = "faceted_glass.stl";
-                saveDialog.Title = "Экспорт модели в STL";
-
-                if (saveDialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        Cursor.Current = Cursors.WaitCursor;
-
-                        // Используем новый метод для построения и экспорта
-                        _builder.BuildAndExportToStl(_parameters, saveDialog.FileName);
-
-                        Cursor.Current = Cursors.Default;
-
-                        MessageBox.Show($"Модель успешно экспортирована в:\n{saveDialog.FileName}",
-                            "Успешный экспорт",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        Cursor.Current = Cursors.Default;
-                        MessageBox.Show($"Ошибка экспорта: {ex.Message}",
-                            "Ошибка",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    }
-                }
+                case 0: // Прямоугольная
+                    _parameters.EdgeType = EdgeType.Rectangular;
+                    break;
+                case 1: // Овальная
+                    _parameters.EdgeType = EdgeType.Oval;
+                    break;
+                case 2: // Трапециевидная
+                    _parameters.EdgeType = EdgeType.Trapezoidal;
+                    break;
             }
-        }
 
+            // Опционально: показываем подсказку
+            textBoxError.Text = $"Выбран тип грани: {comboBoxEdgeType.SelectedItem}";
+
+            // Проверяем, можно ли строить с текущими параметрами
+            CheckParametersBeforeBuilding();
+        }
     }
 }

@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FacetedGlassException.cs" />
+    <Compile Include="FacetedGlassExceptionEnum.cs" />
     <Compile Include="GlassBuilder.cs" />
     <Compile Include="KompasWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

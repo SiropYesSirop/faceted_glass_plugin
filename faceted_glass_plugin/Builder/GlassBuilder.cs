@@ -1,5 +1,6 @@
 ﻿using Builder;
 using Core;
+using Kompas6API5;
 using System;
 
 namespace GlassPlugin
@@ -75,21 +76,56 @@ namespace GlassPlugin
 
                 var tangentPlane = _wrapper.CreateTangentPlaneToCylinder
                     (cylinderRadius, planeAngle, planeHeight);
-                var rectangleSketch = _wrapper.CreateRectangleOnTangentPlane
-                    (tangentPlane, heightTotal - heightBottom - heightUpperEdge,
-                        heightBottom, 0);
-                var singleEdge = _wrapper.CreateCutExtrusion
-                    (rectangleSketch, true, 2, "ПерваяГрань");
-                bool arraySuccess = _wrapper.CreateCircularArrayForEdge
-                    (singleEdge, numberOfEdges);
+                ksEntity edgeSketch = null;
+                string edgeName = "Грань";
 
-                if (tangentPlane != null)
+                switch (parameters.EdgeType)
                 {
+                    case EdgeType.Oval:
+                        edgeSketch = _wrapper.CreateRoundedRectangleOnTangentPlane(tangentPlane,
+                            heightTotal - heightBottom - heightUpperEdge,
+                            heightBottom, 0);
+                        edgeName = "ОвальнаяГрань";
+                        break;
+
+                    case EdgeType.Trapezoidal:
+                        edgeSketch = _wrapper.CreateTrapezoidalOnTangentPlane(tangentPlane,
+                            heightTotal - heightBottom - heightUpperEdge,
+                            heightBottom, 0);
+                        edgeName = "ТрапециевиднаяГрань";
+                        break;
+
+                    case EdgeType.Rectangular:
+                    default:
+                        edgeSketch = _wrapper.CreateRectangleOnTangentPlane(tangentPlane,
+                            heightTotal - heightBottom - heightUpperEdge,
+                            heightBottom, 0);
+                        edgeName = "ПрямоугольнаяГрань";
+                        break;
                 }
-                else
+
+                if (edgeSketch == null)
                 {
-                    throw new Exception
-                        ("Не удалось создать касательную плоскость!");
+                    throw new Exception($"Не удалось создать эскиз для грани типа {parameters.EdgeType}!");
+                }
+
+                var singleEdge = _wrapper.CreateCutExtrusion(edgeSketch, true, 2, edgeName);
+
+                if (singleEdge == null)
+                {
+                    throw new Exception("Не удалось создать вырезание для грани!");
+                }
+
+                bool arraySuccess = _wrapper.CreateCircularArrayForEdge(singleEdge, numberOfEdges);
+
+                if (!arraySuccess)
+                {
+                    throw new Exception("Не удалось создать круговой массив граней!");
+                }
+
+                if (tangentPlane == null)
+                {
+                    throw new Exception("Не удалось создать касательную плоскость!");
                 }
             }
             catch (Exception ex)
@@ -99,7 +135,6 @@ namespace GlassPlugin
             }
         }
 
-        //TODO: user defined exception +
         /// <summary>
         /// Проверка параметров на валидность
         /// </summary>
@@ -118,54 +153,67 @@ namespace GlassPlugin
             double thicknessLowerEdge, double thicknessUpperEdge,
                        double heightUpperEdge, int numberOfEdges)
         {
-            if (heightTotal <= 0) throw FacetedGlassException.Create(
+            //TODO: {} +
+            if (heightTotal <= 0)
+            {
+                throw FacetedGlassException.Create(
                 FacetedGlassExceptionType.HeightTotalInvalid,
                     nameof(heightTotal), heightTotal);
-
+            }
             if (externalRadius <= 0)
+            {
                 throw FacetedGlassException.Create(
                     FacetedGlassExceptionType.RadiusInvalid,
                     nameof(externalRadius), externalRadius);
-
+            }
             if (heightBottom <= 0)
+            {
                 throw FacetedGlassException.Create(
                     FacetedGlassExceptionType.HeightBottomInvalid,
                     nameof(heightBottom), heightBottom);
-
+            }
             if (thicknessLowerEdge <= 0)
+            {
                 throw FacetedGlassException.Create(
                     FacetedGlassExceptionType.ThicknessLowerEdgeInvalid,
                     nameof(thicknessLowerEdge), thicknessLowerEdge);
-
+            }
             if (thicknessUpperEdge <= 0)
+            {
                 throw FacetedGlassException.Create(
                     FacetedGlassExceptionType.ThicknessUpperEdgeInvalid,
                     nameof(thicknessUpperEdge), thicknessUpperEdge);
-
+            }
             if (heightUpperEdge <= 0)
+            {
                 throw FacetedGlassException.Create(
                     FacetedGlassExceptionType.HeightUpperEdgeInvalid,
                     nameof(heightUpperEdge), heightUpperEdge);
-
+            }
             if (numberOfEdges < 8 || numberOfEdges > 11)
+            {
                 throw FacetedGlassException.Create(
                     FacetedGlassExceptionType.NumberOfEdgesInvalid,
                     nameof(numberOfEdges), numberOfEdges);
-
+            }
             if (heightTotal - heightUpperEdge - heightBottom <= 0)
+            {
                 throw new ArgumentException(
                     "Высота средней части стакана не может быть меньше" +
                     " либо равна нулю!");
-
+            }
             if (thicknessLowerEdge >= externalRadius)
+            {
                 throw new ArgumentException(
                     $"Толщина нижней стенки ({thicknessLowerEdge}) должна " +
                         $"быть меньше внешнего радиуса ({externalRadius})");
-
+            }
             if (thicknessUpperEdge >= externalRadius)
+            {
                 throw new ArgumentException(
-                    $"Толщина верхней стенки ({thicknessUpperEdge}) должна "+
+                    $"Толщина верхней стенки ({thicknessUpperEdge}) должна " +
                         $"быть меньше внешнего радиуса ({externalRadius})");
+            }
         }
 
         /// <summary>
@@ -208,35 +256,6 @@ namespace GlassPlugin
             catch
             {
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Построить стакан и экспортировать в STL
-        /// </summary>
-        public void BuildAndExportToStl(Parameters parameters,
-            string stlFilePath)
-        {
-            try
-            {
-                BuildFacetedGlass(parameters);
-
-                if (_wrapper != null)
-                {
-                    bool exportSuccess = _wrapper.
-                        ExportToStlSimple(stlFilePath);
-
-                    if (!exportSuccess)
-                    {
-                        throw new Exception("Не удалось экспортировать " +
-                            "модель в STL формат");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException($"Ошибка построения и" +
-                    $" экспорта: {ex.Message}");
             }
         }
     }

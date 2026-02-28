@@ -1,12 +1,19 @@
 ﻿using System;
 using FluentAssertions;
 using NUnit.Framework;
+using Core;
 
 namespace Core.Tests
 {
     [TestFixture]
     public sealed class NumericalParameterTests
     {
+        //TODO: XML +
+        /// <summary>
+        /// Допустимая погрешность при сравнении чисел с плавающей точкой.
+        /// Используется для корректного сравнения значений double в тестах
+        /// с учетом возможных ошибок округления
+        /// </summary>
         private const double Tolerance = 1e-10;
 
         [Test]
@@ -259,7 +266,7 @@ namespace Core.Tests
 
         [Test]
         [Description("Должна быть возможность корректного обновления" +
-            " только максимального значения, при этом минимальное значение "+
+            " только максимального значения, при этом минимальное значение " +
                 "и текущее значение (если оно в пределах " +
                     "нового диапазона) сохраняются")]
         public void SetMaxValue_ValidValue_ShouldUpdateMaxValue()
@@ -275,7 +282,7 @@ namespace Core.Tests
         }
 
         [Test]
-        [Description("При попытке установить максимальное значение, меньшее"+
+        [Description("При попытке установить максимальное значение, меньшее" +
             " текущего минимального значения, должно генерироваться" +
                 " исключение с информативным сообщением")]
         public void SetMaxValue_LessThanMin_ShouldThrowArgumentException()

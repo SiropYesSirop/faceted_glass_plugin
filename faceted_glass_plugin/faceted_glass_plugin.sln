@@ -4,14 +4,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.14.36603.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacetedGlassPlugin", "faceted_glass_plugin\FacetedGlassPlugin.csproj", "{4BBF0E96-7C09-4113-A5F3-767902D5BB77}"
+	ProjectSection(ProjectDependencies) = postProject
+		{43F535A7-430E-42DD-A247-AA32DAAAE646} = {43F535A7-430E-42DD-A247-AA32DAAAE646}
+		{C48D0831-DE56-41BA-9324-5FB34396C162} = {C48D0831-DE56-41BA-9324-5FB34396C162}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderFacetedGlass", "Builder\BuilderFacetedGlass.csproj", "{97C83FCC-80D5-4609-BC32-F597909206E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{F92CF373-8141-4738-BEF3-0E2316F09809}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{43F535A7-430E-42DD-A247-AA32DAAAE646}"
+	ProjectSection(ProjectDependencies) = postProject
+		{97C83FCC-80D5-4609-BC32-F597909206E1} = {97C83FCC-80D5-4609-BC32-F597909206E1}
+		{F92CF373-8141-4738-BEF3-0E2316F09809} = {F92CF373-8141-4738-BEF3-0E2316F09809}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlassBuilder.Tests", "GlassBuilder.Tests\GlassBuilder.Tests.csproj", "{C48D0831-DE56-41BA-9324-5FB34396C162}"
+	ProjectSection(ProjectDependencies) = postProject
+		{43F535A7-430E-42DD-A247-AA32DAAAE646} = {43F535A7-430E-42DD-A247-AA32DAAAE646}
+		{97C83FCC-80D5-4609-BC32-F597909206E1} = {97C83FCC-80D5-4609-BC32-F597909206E1}
+		{F92CF373-8141-4738-BEF3-0E2316F09809} = {F92CF373-8141-4738-BEF3-0E2316F09809}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

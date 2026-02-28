@@ -67,10 +67,11 @@ namespace Builder
                     _kompas = (KompasObject)Activator.
                         CreateInstance(kompasType);
                 }
-
+                //TODO: {} +
                 if (_kompas == null)
+                {
                     return false;
-
+                }
                 _kompas.Visible = true;
                 _kompas.ActivateControllerAPI();
                 _isCadAttached = true;
@@ -90,9 +91,11 @@ namespace Builder
         {
             try
             {
+                //TODO: {} +
                 if (!_isCadAttached && !ConnectCAD())
+                {
                     return false;
-
+                }
                 _document3D = (ksDocument3D)_kompas.Document3D();
                 _document3D.Create();
                 _document3D = (ksDocument3D)_kompas.ActiveDocument3D();
@@ -206,12 +209,8 @@ namespace Builder
         /// которого завершается</param>
         public void EndSketchEdit(ksEntity sketch)
         {
-            try
-            {
-                var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
-                sketchDef.EndEdit();
-            }
-            catch { }
+            var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
+            sketchDef.EndEdit();
         }
 
         /// <summary>
@@ -225,11 +224,7 @@ namespace Builder
         public void DrawCircle(ksDocument2D doc2D, double centerX,
             double centerY, double radius, int style = 1)
         {
-            try
-            {
-                doc2D.ksCircle(centerX, centerY, radius, style);
-            }
-            catch { }
+            doc2D.ksCircle(centerX, centerY, radius, style);
         }
 
         /// <summary>
@@ -449,23 +444,33 @@ namespace Builder
             {
                 bool lowerSuccess = CreateCylinder("ВнешнийНижний",
                     externalRadiusLower, heightBottom, 0);
-                if (!lowerSuccess) return false;
-
+                //TODO: {} +
+                if (!lowerSuccess)
+                {
+                    return false;
+                }
                 bool middleSuccess = CreateCylinder("ВнешнийСредний",
                     externalRadiusLower, heightMiddle, heightBottom);
-                if (!middleSuccess) return false;
-
+                if (!middleSuccess)
+                {
+                    return false;
+                }
                 double upperOffset = heightBottom + heightMiddle;
                 bool upperSuccess = CreateCylinder("ВнешнийВерхний",
                     externalRadiusUpper, heightUpper, upperOffset);
-                if (!upperSuccess) return false;
-
+                if (!upperSuccess)
+                {
+                    return false;
+                }
                 double upperCutOffset = heightBottom + heightMiddle
                     + heightUpper;
                 bool upperCutSuccess = CutInternalCavity("ПолостьОбщая",
                     internalRadiusUpper, heightMiddle + heightUpper,
                         upperCutOffset);
-                if (!upperCutSuccess) return false;
+                if (!upperCutSuccess)
+                {
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -486,11 +491,7 @@ namespace Builder
         private void DrawLineSeg(ksDocument2D doc2D, double x1, double y1,
             double x2, double y2, int style = 1)
         {
-            try
-            {
-                doc2D.ksLineSeg(x1, y1, x2, y2, style);
-            }
-            catch { }
+            doc2D.ksLineSeg(x1, y1, x2, y2, style);
         }
 
         /// <summary>
@@ -514,7 +515,7 @@ namespace Builder
                     thicknessUpperEdge - thicknessLowerEdge;
                 if (internalRadiusUpper <= 0)
                 {
-                    throw new ArgumentException($"Внутренний радиус верхнего" +
+                    throw new ArgumentException($"Внутренний радиус верхнего"+
                         $" цилиндра отрицательный: {internalRadiusUpper} мм");
                 }
 
@@ -524,7 +525,7 @@ namespace Builder
                     thicknessLowerEdge;
                 if (internalRadiusLower <= 0)
                 {
-                    throw new ArgumentException($"Внутренний радиус нижнего " +
+                    throw new ArgumentException($"Внутренний радиус нижнего "+
                         $"цилиндра отрицательный: {internalRadiusLower} мм");
                 }
 
@@ -600,7 +601,6 @@ namespace Builder
                 throw new ArgumentException($"Ошибка: {ex.Message}");
             }
         }
-
 
         /// <summary>
         /// Создает прямоугольный эскиз на касательной плоскости
@@ -728,52 +728,103 @@ namespace Builder
         }
 
         /// <summary>
-        /// Перечисление для формата экспорта
+        /// Создаёт эскиз со скруглёнными углами (овальная форма)
         /// </summary>
-        public enum AdditionFormatType
-        {
-            /// <summary>
-            /// STL формат
-            /// </summary>
-            FormatSTL = 6
-        }
-
-        /// <summary>
-        /// Метод экспорта в STL
-        /// </summary>
-        public bool ExportToStlSimple(string filePath)
+        public ksEntity CreateRoundedRectangleOnTangentPlane(ksEntity tangentPlane,
+            double rectangleHeight, 
+            double heightBottom, double baseOffset = 0)
         {
             try
             {
-                if (_document3D == null)
-                    return false;
+                var sketch = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_sketch);
+                var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
+                sketchDef.SetPlane(tangentPlane);
+                sketch.Create();
 
-                filePath = Path.ChangeExtension(filePath, ".stl");
+                var doc2D = BeginSketchEdit(sketch);
+                if (doc2D == null)
+                    throw new ArgumentException("Не удалось" +
+                        " начать редактирование!");
 
-                dynamic doc3D = _document3D;
+                double halfWidth = 8;
+                double radius = 8;
+                double yStart = heightBottom;
+                double yEnd = baseOffset + rectangleHeight + heightBottom;
 
-                try
-                {
-                    return doc3D.SaveAs(filePath, 6);
-                }
-                catch
-                {
-                    try
-                    {
-                        object paramObj = new { format = 6 };
-                        return doc3D.SaveAsToAdditionFormat(filePath,
-                            paramObj);
-                    }
-                    catch
-                    {
-                        return doc3D.SaveAs(filePath);
-                    }
-                }
+                doc2D.ksLineSeg(-halfWidth + radius, yStart,
+                    halfWidth - radius, yStart, 1);
+
+                doc2D.ksArcByAngle(halfWidth - radius,
+                    yStart + radius, radius, 270, 360, 1, 1);
+
+                doc2D.ksLineSeg(halfWidth, yStart + radius,
+                    halfWidth, yEnd - radius, 1);
+
+                doc2D.ksArcByAngle(halfWidth - radius,
+                    yEnd - radius, radius, 0, 90, 1, 1);
+
+                doc2D.ksLineSeg(halfWidth - radius, yEnd,
+                    -halfWidth + radius, yEnd, 1);
+
+                doc2D.ksArcByAngle(-halfWidth + radius,
+                    yEnd - radius, radius, 90, 180, 1, 1);
+
+                doc2D.ksLineSeg(-halfWidth, yEnd - radius,
+                    -halfWidth, yStart + radius, 1);
+
+                doc2D.ksArcByAngle(-halfWidth + radius,
+                    yStart + radius, radius, 180, 270, 1, 1);
+
+                EndSketchEdit(sketch);
+                return sketch;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ExportToStlSimple error: {ex.Message}");
-                return false;
+                throw new ArgumentException($"Ошибка при создании" +
+                    $" овальной грани: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Создаёт трапециевидный эскиз на касательной плоскости
+        /// </summary>
+        public ksEntity CreateTrapezoidalOnTangentPlane(ksEntity tangentPlane,
+            double rectangleHeight, double heightBottom, double baseOffset = 0)
+        {
+            try
+            {
+                var sketch = (ksEntity)_part.NewEntity
+                    ((short)Obj3dType.o3d_sketch);
+                var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
+                sketchDef.SetPlane(tangentPlane);
+                sketch.Create();
+
+                var doc2D = BeginSketchEdit(sketch);
+                if (doc2D == null)
+                    throw new ArgumentException("Не удалось " +
+                        "начать редактирование!");
+
+                double bottomWidth = 16;   
+                double topWidth = 10;
+                double yStart = heightBottom;
+                double yEnd = baseOffset + rectangleHeight + heightBottom;
+
+                doc2D.ksLineSeg(-bottomWidth / 2, yStart,
+                    bottomWidth / 2, yStart, 1);   
+                doc2D.ksLineSeg(bottomWidth / 2, yStart,
+                    topWidth / 2, yEnd, 1);    
+                doc2D.ksLineSeg(topWidth / 2, yEnd, -topWidth / 2, yEnd, 1);        
+                doc2D.ksLineSeg(-topWidth / 2, yEnd,
+                    -bottomWidth / 2, yStart, 1); 
+
+                EndSketchEdit(sketch);
+                return sketch;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Ошибка создания трапециевидного" +
+                    $" эскиза: {ex.Message}");
             }
         }
     }

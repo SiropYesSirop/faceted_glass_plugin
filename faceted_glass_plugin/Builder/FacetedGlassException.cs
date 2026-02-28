@@ -3,72 +3,6 @@
 namespace GlassPlugin
 {
     /// <summary>
-    /// Типы исключений для гранёного стакана
-    /// </summary>
-    public enum FacetedGlassExceptionType
-    {
-        /// <summary>
-        /// Неверное значение общей высоты
-        /// </summary>
-        HeightTotalInvalid,
-
-        /// <summary>
-        /// Неверное значение радиуса
-        /// </summary>
-        RadiusInvalid,
-
-        /// <summary>
-        /// Неверное значение высоты дна
-        /// </summary>
-        HeightBottomInvalid,
-
-        /// <summary>
-        /// Неверное значение толщины нижней стенки
-        /// </summary>
-        ThicknessLowerEdgeInvalid,
-
-        /// <summary>
-        /// Неверное значение толщины верхней стенки
-        /// </summary>
-        ThicknessUpperEdgeInvalid,
-
-        /// <summary>
-        /// Неверное значение высоты верхней стенки
-        /// </summary>
-        HeightUpperEdgeInvalid,
-
-        /// <summary>
-        /// Неверное количество граней
-        /// </summary>
-        NumberOfEdgesInvalid,
-
-        /// <summary>
-        /// Не удалось подключиться к КОМПАС
-        /// </summary>
-        KompasConnectionFailed,
-
-        /// <summary>
-        /// Не удалось создать деталь
-        /// </summary>
-        PartCreationFailed,
-
-        /// <summary>
-        /// Не удалось создать касательную плоскость
-        /// </summary>
-        TangentPlaneCreationFailed,
-
-        /// <summary>
-        /// Неверные параметры стакана
-        /// </summary>
-        InvalidGlassParameters,
-
-        /// <summary>
-        /// Ошибка при построении кругового массива
-        /// </summary>
-        CircularArrayCreationFailed
-    }
-
-    /// <summary>
     /// Пользовательское исключение для гранёного стакана
     /// </summary>
     public class FacetedGlassException : Exception
@@ -119,23 +53,29 @@ namespace GlassPlugin
         {
             switch (exceptionType)
             {
+                //TODO: {} +
                 case FacetedGlassExceptionType.HeightTotalInvalid:
-                    return $"Общая высота должна быть положительной" +
+                    {
+                        return $"Общая высота должна быть положительной" +
                         $" (значение: {parameterValue})";
-
+                    }
                 case FacetedGlassExceptionType.RadiusInvalid:
+                {
                     return $"Радиус должен быть положительным" +
                         $" (значение: {parameterValue})";
+                }
 
                 case FacetedGlassExceptionType.HeightBottomInvalid:
+                {
                     return $"Высота дна должна быть положительной" +
                         $" (значение: {parameterValue})";
-
+                }
                 case FacetedGlassExceptionType.ThicknessLowerEdgeInvalid:
+                {
                     return $"Толщина нижней стенки должна быть" +
                         $" положительной и меньше внешнего радиуса" +
                             $" (значение: {parameterValue})";
-
+                }
                 case FacetedGlassExceptionType.ThicknessUpperEdgeInvalid:
                     return $"Толщина верхней стенки должна быть" +
                         $" положительной и меньше внешнего радиуса" +
