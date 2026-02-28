@@ -67,7 +67,6 @@ namespace Builder
                     _kompas = (KompasObject)Activator.
                         CreateInstance(kompasType);
                 }
-                //TODO: {} +
                 if (_kompas == null)
                 {
                     return false;
@@ -91,7 +90,6 @@ namespace Builder
         {
             try
             {
-                //TODO: {} +
                 if (!_isCadAttached && !ConnectCAD())
                 {
                     return false;
@@ -260,6 +258,7 @@ namespace Builder
                         dynamic extrudeDynamic = extrude;
                         extrudeDynamic.Name = name;
                     }
+                    //TODO: refactor
                     catch { }
                 }
 
@@ -304,6 +303,7 @@ namespace Builder
                         dynamic cutDynamic = cut;
                         cutDynamic.Name = name;
                     }
+                    //TODO: refactor
                     catch { }
                 }
 
@@ -444,7 +444,6 @@ namespace Builder
             {
                 bool lowerSuccess = CreateCylinder("ВнешнийНижний",
                     externalRadiusLower, heightBottom, 0);
-                //TODO: {} +
                 if (!lowerSuccess)
                 {
                     return false;
@@ -727,6 +726,7 @@ namespace Builder
             }
         }
 
+        //TODO: XML
         /// <summary>
         /// Создаёт эскиз со скруглёнными углами (овальная форма)
         /// </summary>
@@ -786,6 +786,7 @@ namespace Builder
             }
         }
 
+        //TODO: XML
         /// <summary>
         /// Создаёт трапециевидный эскиз на касательной плоскости
         /// </summary>

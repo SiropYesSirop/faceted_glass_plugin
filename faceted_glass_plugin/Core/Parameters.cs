@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
+    //TODO: XML
     public class Parameters
     {
         /// <summary>
@@ -51,8 +52,7 @@ namespace Core
         /// Словарь параметров гранёного стакана
         /// </summary>
         public Dictionary<ParameterType, NumericalParameter>
-            NumericalParameters
-        { get; set; }
+            NumericalParameters { get; set; }
 
         /// <summary>
         /// Устанавливает зависимые границы для параметра
@@ -64,12 +64,14 @@ namespace Core
             double maxRatio,
             double minRatio = 0)
         {
+            //TODO: {}
             if (independentParameter == null)
                 throw new ArgumentNullException(nameof(independentParameter));
 
             if (dependentParameter == null)
                 throw new ArgumentNullException(nameof(dependentParameter));
 
+            //TODO: RSDN
             if (maxRatio <= 0)
                 throw new ArgumentException("Коэффициент maxRatio должен быть больше 0", nameof(maxRatio));
 
@@ -106,7 +108,8 @@ namespace Core
         /// <summary>
         /// Пытается получить параметр по его типу
         /// </summary>
-        public bool TryGetParameter(ParameterType type, out NumericalParameter parameter)
+        public bool TryGetParameter(ParameterType type, 
+            out NumericalParameter parameter)
         {
             return NumericalParameters.TryGetValue(type, out parameter);
         }

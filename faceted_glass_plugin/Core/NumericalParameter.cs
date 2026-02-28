@@ -5,6 +5,7 @@
 /// </summary>
 public class NumericalParameter
 {
+    //TODO: XML
     private double _minValue;
     private double _maxValue;
     private double _value;
@@ -105,6 +106,7 @@ public class NumericalParameter
                     $" {_maxValue}");
 
         _minValue = value;
+        //TODO: {}
         if (_value < _minValue)
             _value = _minValue;
     }
@@ -124,6 +126,7 @@ public class NumericalParameter
                 $"не может быть меньше текущего минимума {_minValue}");
 
         _maxValue = value;
+
         if (_value > _maxValue)
             _value = _maxValue;
     }

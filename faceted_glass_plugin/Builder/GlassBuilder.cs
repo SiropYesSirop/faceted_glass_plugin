@@ -81,6 +81,7 @@ namespace GlassPlugin
 
                 switch (parameters.EdgeType)
                 {
+                    //TODO: {}
                     case EdgeType.Oval:
                         edgeSketch = _wrapper.CreateRoundedRectangleOnTangentPlane(tangentPlane,
                             heightTotal - heightBottom - heightUpperEdge,
@@ -106,6 +107,7 @@ namespace GlassPlugin
 
                 if (edgeSketch == null)
                 {
+                    //TODO: refactor
                     throw new Exception($"Не удалось создать эскиз для грани типа {parameters.EdgeType}!");
                 }
 
@@ -113,6 +115,7 @@ namespace GlassPlugin
 
                 if (singleEdge == null)
                 {
+                    //TODO: refactor
                     throw new Exception("Не удалось создать вырезание для грани!");
                 }
 
@@ -120,11 +123,13 @@ namespace GlassPlugin
 
                 if (!arraySuccess)
                 {
+                    //TODO: refactor
                     throw new Exception("Не удалось создать круговой массив граней!");
                 }
 
                 if (tangentPlane == null)
                 {
+                    //TODO: refactor
                     throw new Exception("Не удалось создать касательную плоскость!");
                 }
             }
@@ -135,6 +140,7 @@ namespace GlassPlugin
             }
         }
 
+        //TODO: refactor
         /// <summary>
         /// Проверка параметров на валидность
         /// </summary>
@@ -153,7 +159,6 @@ namespace GlassPlugin
             double thicknessLowerEdge, double thicknessUpperEdge,
                        double heightUpperEdge, int numberOfEdges)
         {
-            //TODO: {} +
             if (heightTotal <= 0)
             {
                 throw FacetedGlassException.Create(
@@ -190,6 +195,7 @@ namespace GlassPlugin
                     FacetedGlassExceptionType.HeightUpperEdgeInvalid,
                     nameof(heightUpperEdge), heightUpperEdge);
             }
+            //TODO: to const
             if (numberOfEdges < 8 || numberOfEdges > 11)
             {
                 throw FacetedGlassException.Create(

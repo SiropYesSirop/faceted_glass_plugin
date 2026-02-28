@@ -53,7 +53,6 @@ namespace GlassPlugin
         {
             switch (exceptionType)
             {
-                //TODO: {} +
                 case FacetedGlassExceptionType.HeightTotalInvalid:
                     {
                         return $"Общая высота должна быть положительной" +

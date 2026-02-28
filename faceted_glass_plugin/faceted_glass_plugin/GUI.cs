@@ -21,6 +21,7 @@ namespace faceted_glass_plugin
         /// </summary>
         private GlassBuilder _builder;
 
+        //TODO: refactor
         /// <summary>
         /// Параметры гранёного стакана
         /// </summary>
@@ -51,13 +52,11 @@ namespace faceted_glass_plugin
         /// </summary>
         private double _numberOfEdgeCurrent;
 
-        //TODO: refactor +
         /// <summary>
         /// Словарь сообщений об ошибках для параметров
         /// </summary>
         private Dictionary<ParameterType, string> _errorMessages;
 
-        //TODO: refactor +
         /// <summary>
         /// Список связок параметров с элементами управления
         /// </summary>
@@ -72,7 +71,6 @@ namespace faceted_glass_plugin
             InitializeErrorMessages();
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Инициализирует словарь сообщений об ошибках
         /// </summary>
@@ -97,12 +95,12 @@ namespace faceted_glass_plugin
             };
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Класс для связки параметра с элементами управления
         /// </summary>
         private class ParameterControlBinding
         {
+            //TODO: XML
             public ParameterType Type { get; set; }
             public TextBox TextBox { get; set; }
             public Label LimitLabel { get; set; }
@@ -148,11 +146,11 @@ namespace faceted_glass_plugin
             }
 
             // Подписываемся на событие изменения выбора
-            comboBoxEdgeType.SelectedIndexChanged += comboBoxEdgeType_SelectedIndexChanged;
+            comboBoxEdgeType.SelectedIndexChanged += 
+                comboBoxEdgeType_SelectedIndexChanged;
         }
 
 
-        //TODO: refactor +
         /// <summary>
         /// Инициализирует связки параметров с элементами управления
         /// </summary>
@@ -219,7 +217,6 @@ namespace faceted_glass_plugin
             };
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Обновляет все метки с ограничениями параметров
         /// </summary>
@@ -231,11 +228,11 @@ namespace faceted_glass_plugin
                 string unit = binding.Type ==
                     ParameterType.NumberOfEdge ? "шт." : "мм";
                 binding.LimitLabel.Text =
+                    //TODO: to const
                     $"от {param.MinValue:F1} до {param.MaxValue:F1} {unit}";
             }
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Устанавливает начальные значения в текстовые поля
         /// </summary>
@@ -302,7 +299,6 @@ namespace faceted_glass_plugin
 
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Проверка заполненности всех параметров
         /// </summary>
@@ -328,7 +324,6 @@ namespace faceted_glass_plugin
             return true;
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Отображает ошибки для некорректных параметров
         /// </summary>
@@ -400,6 +395,7 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: refactor
         /// <summary>
         /// Обработчик потери фокуса полем ввода количества граней
         /// </summary>
@@ -459,6 +455,7 @@ namespace faceted_glass_plugin
                     .First(b => b.Type == ParameterType.ThicknessUpperEdge);
                 var upperParam = _parameters.NumericalParameters
                     [ParameterType.ThicknessUpperEdge];
+                //TODO: to const
                 binding.LimitLabel.Text = $"от {upperParam.MinValue:F1} до "+
                     $"{upperParam.MaxValue:F1} мм";
 
@@ -500,6 +497,7 @@ namespace faceted_glass_plugin
         /// <param name="target_label">Имя параметра для
         /// отображения в окне ошибок</param>
         private void CheckDepended(object target,
+            //TODO: RSDN
             ParameterType parametertype, string target_label)
         {
             Control target_control = (Control)target;
@@ -597,8 +595,10 @@ namespace faceted_glass_plugin
                 .Any(b => b.TextBox.ForeColor == Color.Red);
         }
 
+        //TODO: XML
         private void comboBoxEdgeType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //TODO: {}
             switch (comboBoxEdgeType.SelectedIndex)
             {
                 case 0: // Прямоугольная
