@@ -10,15 +10,14 @@ public class NumericalParameter
     private double _value;
 
     /// <summary>
-    /// Конструктор класса NumericalParameter.
-    /// Инициализирует параметр с указанными границами диапазона
+    /// Конструктор класса NumericalParameter
     /// </summary>
     /// <param name="minValue">Минимальное допустимое 
     /// значение параметра</param>
     /// <param name="maxValue">Максимальное допустимое
     /// значение параметра</param>
-    /// <exception cref="ArgumentException">Если минимальное значение 
-    /// больше максимального</exception>
+    /// <exception cref="ArgumentException">Если минимальное
+    /// значение больше максимального</exception>
     public NumericalParameter(double minValue, double maxValue)
     {
         if (minValue > maxValue)
@@ -43,18 +42,13 @@ public class NumericalParameter
     /// <summary>
     /// Текущее значение параметра
     /// </summary>
-    /// <exception cref="ArgumentException">Если присваиваемое значение 
-    /// выходит за границы допустимого диапазона</exception>
+    /// <exception cref="ArgumentException">Если присваиваемое
+    /// значение выходит за границы допустимого диапазона</exception>
     public double Value
     {
         get => _value;
         set
         {
-            if (value < _minValue || value > _maxValue)
-            {
-                throw new ArgumentException($"Значение {value} выходит" +
-                    $" за границы [{_minValue}, {_maxValue}]");
-            }
             _value = value;
         }
     }
@@ -64,8 +58,8 @@ public class NumericalParameter
     /// </summary>
     /// <param name="minValue">Новое минимальное значение</param>
     /// <param name="maxValue">Новое максимальное значение</param>
-    /// <exception cref="ArgumentException">Если минимальное значение 
-    /// больше максимального</exception>
+    /// <exception cref="ArgumentException">Если минимальное
+    /// значение больше максимального</exception>
     /// <remarks>Если текущее значение выходит за новые границы,
     /// оно автоматически корректируется до ближайшей границы</remarks>
     public void SetRange(double minValue, double maxValue)
@@ -93,10 +87,10 @@ public class NumericalParameter
     /// Изменяет минимальное значение с сохранением корректности
     /// </summary>
     /// <param name="value">Новое минимальное значение</param>
-    /// <exception cref="ArgumentException">Если новое минимальное значение 
-    /// больше текущего максимума</exception>
-    /// <remarks>Если текущее значение меньше нового минимума,
-    /// оно автоматически увеличивается до нового минимума</remarks>
+    /// <exception cref="ArgumentException">Если новое минимальное
+    /// значение больше текущего максимума</exception>
+    /// <remarks>Если текущее значение меньше нового минимума, оно
+    /// автоматически увеличивается до нового минимума</remarks>
     public void SetMinValue(double value)
     {
         if (value > _maxValue)

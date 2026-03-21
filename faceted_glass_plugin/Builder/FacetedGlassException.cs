@@ -13,13 +13,17 @@ namespace GlassPlugin
         public FacetedGlassExceptionType ExceptionType { get; }
 
         /// <summary>
-        /// Значение параметра
+        /// Значение параметра, вызвавшего исключение
         /// </summary>
         public object ParameterValue { get; }
 
         /// <summary>
-        /// Создает новое исключение для гранёного стакана
+        /// Инициализирует новый экземпляр исключения FacetedGlassException
         /// </summary>
+        /// <param name="exceptionType">Тип исключения</param>
+        /// <param name="message">Сообщение об ошибке</param>
+        /// <param name="parameterName">Имя параметра</param>
+        /// <param name="parameterValue">Значение параметра</param>
         public FacetedGlassException(
             FacetedGlassExceptionType exceptionType,
             string message,
@@ -32,8 +36,13 @@ namespace GlassPlugin
         }
 
         /// <summary>
-        /// Создает исключение с автоматическим сообщением
+        /// Создаёт исключение с автоматическим сообщением 
+        /// для указанного типа
         /// </summary>
+        /// <param name="exceptionType">Тип исключения</param>
+        /// <param name="parameterName">Имя параметра</param>
+        /// <param name="parameterValue">Значение параметра</param>
+        /// <returns>Новый экземпляр FacetedGlassException</returns>
         public static FacetedGlassException Create(
             FacetedGlassExceptionType exceptionType,
             string parameterName = null,
@@ -45,8 +54,11 @@ namespace GlassPlugin
         }
 
         /// <summary>
-        /// Получает сообщение по умолчанию для типа исключения
+        /// Получает сообщение по умолчанию для указанного типа исключения
         /// </summary>
+        /// <param name="exceptionType">Тип исключения</param>
+        /// <param name="parameterValue">Значение параметра</param>
+        /// <returns>Сообщение об ошибке</returns>
         private static string GetDefaultMessage(
             FacetedGlassExceptionType exceptionType,
             object parameterValue)
@@ -60,22 +72,22 @@ namespace GlassPlugin
                         $" (значение: {parameterValue})";
                     }
                 case FacetedGlassExceptionType.RadiusInvalid:
-                {
-                    return $"Радиус должен быть положительным" +
-                        $" (значение: {parameterValue})";
-                }
+                    {
+                        return $"Радиус должен быть положительным" +
+                            $" (значение: {parameterValue})";
+                    }
 
                 case FacetedGlassExceptionType.HeightBottomInvalid:
-                {
-                    return $"Высота дна должна быть положительной" +
-                        $" (значение: {parameterValue})";
-                }
-                case FacetedGlassExceptionType.ThicknessLowerEdgeInvalid:
-                {
-                    return $"Толщина нижней стенки должна быть" +
-                        $" положительной и меньше внешнего радиуса" +
+                    {
+                        return $"Высота дна должна быть положительной" +
                             $" (значение: {parameterValue})";
-                }
+                    }
+                case FacetedGlassExceptionType.ThicknessLowerEdgeInvalid:
+                    {
+                        return $"Толщина нижней стенки должна быть" +
+                            $" положительной и меньше внешнего радиуса" +
+                                $" (значение: {parameterValue})";
+                    }
                 case FacetedGlassExceptionType.ThicknessUpperEdgeInvalid:
                     return $"Толщина верхней стенки должна быть" +
                         $" положительной и меньше внешнего радиуса" +

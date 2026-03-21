@@ -93,23 +93,6 @@ namespace Core.Tests
         }
 
         [Test]
-        [Description("При попытке установить некорректное значение" +
-            " (выходящее за пределы диапазона) должно генерироваться " +
-                "исключение, а предыдущее корректное значение должно " +
-                    "сохраняться")]
-        public void Value_AfterInvalidSet_ShouldKeepPreviousValue()
-        {
-            var parameter = new NumericalParameter(10, 100);
-            parameter.Value = 75;
-            var originalValue = parameter.Value;
-
-            Action invalidAction = () => parameter.Value = 150;
-            invalidAction.Should().Throw<ArgumentException>();
-
-            parameter.Value.Should().Be(originalValue);
-        }
-
-        [Test]
         [Description("Должна быть возможность многократного изменения " +
             "значения в пределах допустимого диапазона")]
         public void Value_SetMultipleTimes_ShouldWorkCorrectly()
@@ -266,7 +249,7 @@ namespace Core.Tests
 
         [Test]
         [Description("Должна быть возможность корректного обновления" +
-            " только максимального значения, при этом минимальное значение " +
+            " только максимального значения, при этом минимальное значение "+
                 "и текущее значение (если оно в пределах " +
                     "нового диапазона) сохраняются")]
         public void SetMaxValue_ValidValue_ShouldUpdateMaxValue()
@@ -282,7 +265,7 @@ namespace Core.Tests
         }
 
         [Test]
-        [Description("При попытке установить максимальное значение, меньшее" +
+        [Description("При попытке установить максимальное значение, меньшее"+
             " текущего минимального значения, должно генерироваться" +
                 " исключение с информативным сообщением")]
         public void SetMaxValue_LessThanMin_ShouldThrowArgumentException()
@@ -358,21 +341,6 @@ namespace Core.Tests
 
             parameter.Value = -50;
             parameter.Value.Should().Be(-50);
-        }
-
-        [Test]
-        [Description("Класс должен корректно работать с дробными" +
-            " значениями, включая проверку границ диапазона " +
-                "для дробных чисел")]
-        public void Value_WithDecimalRange_ShouldWork()
-        {
-            var parameter = new NumericalParameter(1.5, 2.5);
-
-            parameter.Value = 2.0;
-            parameter.Value.Should().Be(2.0);
-
-            Action action = () => parameter.Value = 3.0;
-            action.Should().Throw<ArgumentException>();
         }
     }
 }

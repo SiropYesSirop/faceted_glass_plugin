@@ -730,8 +730,8 @@ namespace Builder
         /// <summary>
         /// Создаёт эскиз со скруглёнными углами (овальная форма)
         /// </summary>
-        public ksEntity CreateRoundedRectangleOnTangentPlane(ksEntity tangentPlane,
-            double rectangleHeight, 
+        public ksEntity CreateRoundedRectangleOnTangentPlane
+            (ksEntity tangentPlane,double rectangleHeight, 
             double heightBottom, double baseOffset = 0)
         {
             try
@@ -789,8 +789,9 @@ namespace Builder
         /// <summary>
         /// Создаёт трапециевидный эскиз на касательной плоскости
         /// </summary>
-        public ksEntity CreateTrapezoidalOnTangentPlane(ksEntity tangentPlane,
-            double rectangleHeight, double heightBottom, double baseOffset = 0)
+        public ksEntity CreateTrapezoidalOnTangentPlane
+            (ksEntity tangentPlane, double rectangleHeight,
+            double heightBottom, double baseOffset = 0)
         {
             try
             {
@@ -814,7 +815,8 @@ namespace Builder
                     bottomWidth / 2, yStart, 1);   
                 doc2D.ksLineSeg(bottomWidth / 2, yStart,
                     topWidth / 2, yEnd, 1);    
-                doc2D.ksLineSeg(topWidth / 2, yEnd, -topWidth / 2, yEnd, 1);        
+                doc2D.ksLineSeg
+                    (topWidth / 2, yEnd, -topWidth / 2, yEnd, 1);        
                 doc2D.ksLineSeg(-topWidth / 2, yEnd,
                     -bottomWidth / 2, yStart, 1); 
 
@@ -823,8 +825,9 @@ namespace Builder
             }
             catch (Exception ex)
             {
-                throw new ArgumentException($"Ошибка создания трапециевидного" +
-                    $" эскиза: {ex.Message}");
+                throw new ArgumentException
+                    ($"Ошибка создания трапециевидного" +
+                        $" эскиза: {ex.Message}");
             }
         }
     }
