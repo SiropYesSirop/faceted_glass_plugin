@@ -106,18 +106,26 @@ namespace faceted_glass_plugin
             switch (_parameters.EdgeType)
             {
                 case EdgeType.Rectangular:
-                    comboBoxEdgeType.SelectedIndex = 0;
-                    break;
+                    {
+                        comboBoxEdgeType.SelectedIndex = 0;
+                        break;
+                    }
                 case EdgeType.Oval:
-                    comboBoxEdgeType.SelectedIndex = 1;
-                    break;
+                    {
+                        comboBoxEdgeType.SelectedIndex = 1;
+                        break;
+                    }
                 case EdgeType.Trapezoidal:
-                    comboBoxEdgeType.SelectedIndex = 2;
-                    break;
+                    {
+                        comboBoxEdgeType.SelectedIndex = 2;
+                        break;
+                    }
                 default:
-                    comboBoxEdgeType.SelectedIndex = 0;
-                    _parameters.EdgeType = EdgeType.Rectangular;
-                    break;
+                    {
+                        comboBoxEdgeType.SelectedIndex = 0;
+                        _parameters.EdgeType = EdgeType.Rectangular;
+                        break;
+                    }
             }
             comboBoxEdgeType.SelectedIndexChanged
                 += comboBoxEdgeType_SelectedIndexChanged;
@@ -546,14 +554,20 @@ namespace faceted_glass_plugin
             switch (comboBoxEdgeType.SelectedIndex)
             {
                 case 0:
-                    _parameters.EdgeType = EdgeType.Rectangular;
-                    break;
+                    {
+                        _parameters.EdgeType = EdgeType.Rectangular;
+                        break;
+                    }
                 case 1:
-                    _parameters.EdgeType = EdgeType.Oval;
-                    break;
+                    {
+                        _parameters.EdgeType = EdgeType.Oval;
+                        break;
+                    }
                 case 2:
-                    _parameters.EdgeType = EdgeType.Trapezoidal;
-                    break;
+                    {
+                        _parameters.EdgeType = EdgeType.Trapezoidal;
+                        break;
+                    }
             }
             textBoxError.Text = $"Выбран тип грани: " +
                 $"{comboBoxEdgeType.SelectedItem}";

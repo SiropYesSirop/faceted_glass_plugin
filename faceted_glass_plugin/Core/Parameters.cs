@@ -75,25 +75,31 @@ namespace Core
             double minRatio = 0)
         {
             if (independentParameter == null)
+            {
                 throw new ArgumentNullException
                     (nameof(independentParameter));
-
+            }
             if (dependentParameter == null)
+            {
                 throw new ArgumentNullException
                     (nameof(dependentParameter));
-
+            }
             if (maxRatio <= 0)
+            {
                 throw new ArgumentException
                     ("Коэффициент maxRatio должен быть больше 0",
                         nameof(maxRatio));
-
+            }
             if (minRatio < 0)
+            {
                 throw new ArgumentException("Коэффициент minRatio" +
                     " не может быть отрицательным", nameof(minRatio));
-
+            }
             if (minRatio > maxRatio)
+            {
                 throw new ArgumentException("minRatio не может" +
                     " быть больше maxRatio");
+            }
 
             double currentValue = independentParameter.Value;
             double newMaxValue = currentValue * maxRatio;
@@ -185,17 +191,9 @@ namespace Core
         /// <returns>true, если все параметры валидны; иначе false</returns>
         public bool TryValidate(out string errorMessage)
         {
-            try
-            {
-                ValidateFields();
-                errorMessage = null;
-                return true;
-            }
-            catch (ArgumentException ex)
-            {
-                errorMessage = ex.Message;
-                return false;
-            }
+            ValidateFields();
+            errorMessage = null;
+            return true;
         }
 
         /// <summary>

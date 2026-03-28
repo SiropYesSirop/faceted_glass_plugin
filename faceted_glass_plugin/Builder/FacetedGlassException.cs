@@ -89,24 +89,30 @@ namespace GlassPlugin
                                 $" (значение: {parameterValue})";
                     }
                 case FacetedGlassExceptionType.ThicknessUpperEdgeInvalid:
-                    return $"Толщина верхней стенки должна быть" +
-                        $" положительной и меньше внешнего радиуса" +
-                            $" (значение: {parameterValue})";
-
+                    {
+                        return $"Толщина верхней стенки должна быть" +
+                            $" положительной и меньше внешнего радиуса" +
+                                $" (значение: {parameterValue})";
+                    }
                 case FacetedGlassExceptionType.HeightUpperEdgeInvalid:
-                    return $"Высота верхней стенки должна быть" +
-                        $" положительной (значение: {parameterValue})";
-
+                    {
+                        return $"Высота верхней стенки должна быть" +
+                            $" положительной (значение: {parameterValue})";
+                    }
                 case FacetedGlassExceptionType.NumberOfEdgesInvalid:
-                    return $"Количество граней должно быть от 8 до" +
-                        $" 11 (значение: {parameterValue})";
-
+                    {
+                        return $"Количество граней должно быть от 8 до" +
+                            $" 11 (значение: {parameterValue})";
+                    }
                 case FacetedGlassExceptionType.KompasConnectionFailed:
-                    return "Не удалось подключиться к КОМПАС-3D";
-
+                    {
+                        return "Не удалось подключиться к КОМПАС-3D";
+                    }
                 default:
-                    return "Произошла ошибка при построении " +
-                        "гранёного стакана";
+                    {
+                        return "Произошла ошибка при построении " +
+                            "гранёного стакана";
+                    }
             }
         }
     }

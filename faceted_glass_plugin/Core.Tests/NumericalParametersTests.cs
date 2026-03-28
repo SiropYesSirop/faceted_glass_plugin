@@ -342,5 +342,93 @@ namespace Core.Tests
             parameter.Value = -50;
             parameter.Value.Should().Be(-50);
         }
+
+        [Test]
+        [Description("При попытке установить значение меньше минимальной " +
+            "границы должно генерироваться исключение ArgumentException с "+
+                "информативным сообщением, содержащим значение и диапазон")]
+        public void Value_SetValueBelowMin_ShouldThrowArgumentException()
+        {
+            var parameter = new NumericalParameter(10, 100);
+
+            Action action = () => parameter.Value = 5;
+
+            action.Should()
+                .Throw<ArgumentException>()
+                .WithMessage("Значение 5 выходит за границы [10, 100]");
+        }
+
+        [Test]
+        [Description("При попытке установить значение больше максимальной "+
+            "границы должно генерироваться исключение ArgumentException с "+
+            "информативным сообщением, содержащим значение и диапазон")]
+        public void Value_SetValueAboveMax_ShouldThrowArgumentException()
+        {
+            var parameter = new NumericalParameter(10, 100);
+
+            Action action = () => parameter.Value = 150;
+
+            action.Should()
+                .Throw<ArgumentException>()
+                .WithMessage("Значение 150 выходит за границы [10, 100]");
+        }
+
+        [Test]
+        [Description("При попытке установить значение, равное минимальной "+
+            "границе, значение должно успешно установиться")]
+        public void Value_SetValueEqualToMin_ShouldSetValue()
+        {
+            var parameter = new NumericalParameter(10, 100);
+
+            parameter.Value = 10;
+
+            parameter.Value.Should().Be(10);
+        }
+
+        [Test]
+        [Description("При попытке установить значение, равное максимальной "+
+            "границе, значение должно успешно установиться")]
+        public void Value_SetValueEqualToMax_ShouldSetValue()
+        {
+            var parameter = new NumericalParameter(10, 100);
+
+            parameter.Value = 100;
+
+            parameter.Value.Should().Be(100);
+        }
+
+        [Test]
+        [Description("При попытке установить значение, находящееся внутри "+
+            "диапазона (не на границах), значение должно" +
+                " успешно установиться")]
+        public void Value_SetValueInsideRange_ShouldSetValue()
+        {
+            var parameter = new NumericalParameter(10, 100);
+
+            parameter.Value = 55;
+
+            parameter.Value.Should().Be(55);
+        }
+
+        [Test]
+        [Description("При изменении диапазона через SetRange с последующей "+
+            "попыткой установить значение, которое было невалидны" +
+            " для старого "+
+                "диапазона, но стало валидным для " +
+                    "нового, значение должно " +
+                        "установиться успешно")]
+        public void Value_AfterRangeChange_ShouldValidateAgainstNewRange()
+        {
+            var parameter = new NumericalParameter(0, 50);
+            parameter.Value = 25;
+            parameter.SetRange(30, 80);
+            parameter.Value.Should().Be(30);
+            parameter.Value = 60;
+            parameter.Value.Should().Be(60);
+            Action action = () => parameter.Value = 25;
+            action.Should()
+                .Throw<ArgumentException>()
+                .WithMessage("Значение 25 выходит за границы [30, 80]");
+        }
     }
 }

@@ -255,14 +255,9 @@ namespace Builder
 
                 if (!string.IsNullOrEmpty(name))
                 {
-                    try
-                    {
-                        dynamic extrudeDynamic = extrude;
-                        extrudeDynamic.Name = name;
-                    }
-                    catch { }
+                    dynamic extrudeDynamic = extrude;
+                    extrudeDynamic.Name = name;
                 }
-
                 return extrude;
             }
             catch
@@ -299,14 +294,9 @@ namespace Builder
 
                 if (!string.IsNullOrEmpty(name))
                 {
-                    try
-                    {
-                        dynamic cutDynamic = cut;
-                        cutDynamic.Name = name;
-                    }
-                    catch { }
+                    dynamic cutDynamic = cut;
+                    cutDynamic.Name = name;
                 }
-
                 return cut;
             }
             catch
@@ -338,18 +328,15 @@ namespace Builder
                     sketch = CreateSketchOnOffsetPlane((short)
                         Obj3dType.o3d_planeXOY, offsetZ);
                 }
-
                 if (sketch == null)
                 {
                     return false;
                 }
-
                 var doc2D = BeginSketchEdit(sketch);
                 if (doc2D == null)
                 {
                     return false;
                 }
-
                 DrawCircle(doc2D, 0, 0, radius);
                 EndSketchEdit(sketch);
 
@@ -358,7 +345,6 @@ namespace Builder
                 {
                     return false;
                 }
-
                 return true;
             }
             catch (Exception ex)
@@ -382,7 +368,6 @@ namespace Builder
             {
                 if (cutHeight <= 0)
                 {
-
                     return false;
                 }
 
