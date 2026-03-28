@@ -357,7 +357,8 @@ namespace Core.Tests
                 .Value = 7;
             _parameters.GetParameter(ParameterType.HeightUpperEdge)
                 .Value = 40;
-            _parameters.GetParameter(ParameterType.NumberOfEdge).Value = 11;
+            _parameters.GetParameter(ParameterType.NumberOfEdge)
+                .Value = 11;
 
             isValid = _parameters.TryValidate(out errorMessage);
             isValid.Should().BeTrue();
