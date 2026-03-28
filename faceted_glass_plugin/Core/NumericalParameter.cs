@@ -5,6 +5,7 @@
 /// </summary>
 public class NumericalParameter
 {
+    //TODO: XML
     private double _minValue;
     private double _maxValue;
     private double _value;

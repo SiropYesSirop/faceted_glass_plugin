@@ -11,6 +11,7 @@ namespace Core.Tests
     {
         private Parameters _parameters;
 
+        //TODO: refactor
         /// <summary>
         /// Метод инициализации, выполняемый перед каждым тестом
         /// </summary>

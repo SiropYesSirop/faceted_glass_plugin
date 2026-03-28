@@ -79,6 +79,7 @@ namespace GlassPlugin
 
                 switch (parameters.EdgeType)
                 {
+                    //TODO: отступ
                     case EdgeType.Oval:
                         {
                             edgeSketch = _wrapper.

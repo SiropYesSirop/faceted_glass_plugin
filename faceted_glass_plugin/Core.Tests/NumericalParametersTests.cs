@@ -8,7 +8,6 @@ namespace Core.Tests
     [TestFixture]
     public sealed class NumericalParameterTests
     {
-        //TODO: XML +
         /// <summary>
         /// Допустимая погрешность при сравнении чисел с плавающей точкой.
         /// Используется для корректного сравнения значений double в тестах

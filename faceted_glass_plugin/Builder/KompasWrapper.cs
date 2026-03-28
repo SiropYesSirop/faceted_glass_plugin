@@ -67,7 +67,6 @@ namespace Builder
                     _kompas = (KompasObject)Activator.
                         CreateInstance(kompasType);
                 }
-                //TODO: {} +
                 if (_kompas == null)
                 {
                     return false;
@@ -91,7 +90,6 @@ namespace Builder
         {
             try
             {
-                //TODO: {} +
                 if (!_isCadAttached && !ConnectCAD())
                 {
                     return false;
@@ -347,6 +345,7 @@ namespace Builder
                 }
                 return true;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка: {ex.Message}");
@@ -399,6 +398,7 @@ namespace Builder
                 }
                 return true;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка: {ex.Message}");
@@ -429,17 +429,18 @@ namespace Builder
             {
                 bool lowerSuccess = CreateCylinder("ВнешнийНижний",
                     externalRadiusLower, heightBottom, 0);
-                //TODO: {} +
                 if (!lowerSuccess)
                 {
                     return false;
                 }
+
                 bool middleSuccess = CreateCylinder("ВнешнийСредний",
                     externalRadiusLower, heightMiddle, heightBottom);
                 if (!middleSuccess)
                 {
                     return false;
                 }
+
                 double upperOffset = heightBottom + heightMiddle;
                 bool upperSuccess = CreateCylinder("ВнешнийВерхний",
                     externalRadiusUpper, heightUpper, upperOffset);
@@ -447,6 +448,7 @@ namespace Builder
                 {
                     return false;
                 }
+
                 double upperCutOffset = heightBottom + heightMiddle
                     + heightUpper;
                 bool upperCutSuccess = CutInternalCavity("ПолостьОбщая",
@@ -458,6 +460,7 @@ namespace Builder
                 }
                 return true;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка: {ex.Message}");
@@ -531,6 +534,7 @@ namespace Builder
                     throw new Exception("Не удалось создать полый стакан");
                 }
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка: {ex.Message}");
@@ -581,6 +585,7 @@ namespace Builder
 
                 return offsetPlane;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка: {ex.Message}");
@@ -640,6 +645,7 @@ namespace Builder
                 EndSketchEdit(sketch);
                 return sketch;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка: {ex.Message}");
@@ -706,6 +712,7 @@ namespace Builder
                 }
                 return true;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка: {ex.Message}");
@@ -764,6 +771,7 @@ namespace Builder
                 EndSketchEdit(sketch);
                 return sketch;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException($"Ошибка при создании" +
@@ -808,6 +816,7 @@ namespace Builder
                 EndSketchEdit(sketch);
                 return sketch;
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 throw new ArgumentException

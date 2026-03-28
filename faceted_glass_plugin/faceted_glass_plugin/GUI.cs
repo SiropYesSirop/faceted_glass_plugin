@@ -26,13 +26,11 @@ namespace faceted_glass_plugin
         /// </summary>
         private Parameters _parameters;
 
-        //TODO: refactor +
         /// <summary>
         /// Словарь сообщений об ошибках для параметров
         /// </summary>
         private Dictionary<ParameterType, string> _errorMessages;
 
-        //TODO: refactor +
         /// <summary>
         /// Список связок параметров с элементами управления
         /// </summary>
@@ -47,7 +45,6 @@ namespace faceted_glass_plugin
             InitializeErrorMessages();
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Инициализирует словарь сообщений об ошибках
         /// </summary>
@@ -72,12 +69,12 @@ namespace faceted_glass_plugin
             };
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Класс для связки параметра с элементами управления
         /// </summary>
         private class ParameterControlBinding
         {
+            //TODO: XML
             public ParameterType Type { get; set; }
             public TextBox TextBox { get; set; }
             public Label LimitLabel { get; set; }
@@ -105,6 +102,7 @@ namespace faceted_glass_plugin
         {
             switch (_parameters.EdgeType)
             {
+                //TODO: отступ
                 case EdgeType.Rectangular:
                     {
                         comboBoxEdgeType.SelectedIndex = 0;
@@ -132,7 +130,6 @@ namespace faceted_glass_plugin
         }
 
 
-        //TODO: refactor +
         /// <summary>
         /// Инициализирует связки параметров с элементами управления
         /// </summary>
@@ -192,7 +189,6 @@ namespace faceted_glass_plugin
             };
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Обновляет все метки с ограничениями параметров
         /// </summary>
@@ -205,7 +201,6 @@ namespace faceted_glass_plugin
             }
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Устанавливает начальные значения в текстовые поля
         /// </summary>
@@ -253,7 +248,6 @@ namespace faceted_glass_plugin
             }
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Проверка заполненности всех параметров
         /// </summary>
@@ -279,7 +273,6 @@ namespace faceted_glass_plugin
             return true;
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Отображает ошибки для некорректных параметров
         /// </summary>
@@ -298,7 +291,6 @@ namespace faceted_glass_plugin
             }
         }
 
-        //TODO: refactor +
         /// <summary>
         /// Общий обработчик потери фокуса для числовых параметров
         /// </summary>
@@ -350,6 +342,8 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: duplication
+        //TODO: RSDN
         /// <summary>
         /// Обработчик потери фокуса полем ввода количества граней
         /// </summary>
@@ -359,6 +353,7 @@ namespace faceted_glass_plugin
                 ParameterType.NumberOfEdge, labelNumberOfEdge);
         }
 
+        //TODO: RSDN
         /// <summary>
         /// Обработчик потери фокуса полем ввода высоты верхней стенки
         /// </summary>
@@ -368,6 +363,7 @@ namespace faceted_glass_plugin
                 ParameterType.HeightUpperEdge, labelHeightUpperEdge);
         }
 
+        //TODO: RSDN
         /// <summary>
         /// Обработчик потери фокуса полем ввода толщины верхней стенки
         /// </summary>
@@ -378,6 +374,7 @@ namespace faceted_glass_plugin
                 ParameterType.ThicknessUpperEdge, labelThicknessUpperEdge);
         }
 
+        //TODO: RSDN
         /// <summary>
         /// Обработчик потери фокуса полем ввода толщины нижней стенки
         /// </summary>
@@ -423,6 +420,7 @@ namespace faceted_glass_plugin
             }
         }
 
+        //TODO: RSDN
         /// <summary>
         /// Обработчик потери фокуса полем ввода высоты дна
         /// </summary>
@@ -432,6 +430,7 @@ namespace faceted_glass_plugin
                 ParameterType.HeightBottom, labelHeightBottom);
         }
 
+        //TODO: RSDN
         /// <summary>
         /// Обработчик потери фокуса полем ввода радиуса
         /// </summary>
@@ -470,6 +469,7 @@ namespace faceted_glass_plugin
                     }
                 }
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 if (ex.Message == "Введено некорректное значение!")
@@ -526,6 +526,7 @@ namespace faceted_glass_plugin
                     _parameters.GetRangeString
                         (ParameterType.HeightUpperEdge);
             }
+            //TODO: refactor
             catch (Exception ex)
             {
                 textBoxHeightTotal.ForeColor = Color.Red;
@@ -553,6 +554,7 @@ namespace faceted_glass_plugin
         {
             switch (comboBoxEdgeType.SelectedIndex)
             {
+                //TODO: отступ
                 case 0:
                     {
                         _parameters.EdgeType = EdgeType.Rectangular;
