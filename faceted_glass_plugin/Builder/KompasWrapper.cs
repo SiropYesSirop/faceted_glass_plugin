@@ -1,9 +1,8 @@
 ﻿using Kompas6API5;
 using Kompas6Constants;
 using Kompas6Constants3D;
+using GlassPlugin;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Builder
@@ -62,7 +61,9 @@ namespace Builder
                     var kompasType = Type.GetTypeFromProgID
                         ("KOMPAS.Application.5");
                     if (kompasType == null)
+                    {
                         return false;
+                    }
 
                     _kompas = (KompasObject)Activator.
                         CreateInstance(kompasType);
@@ -127,14 +128,30 @@ namespace Builder
         /// Создает новый эскиз на указанной плоскости
         /// </summary>
         /// <param name="planeType">Тип плоскости для создания эскиза</param>
-        /// <returns>Созданный эскиз или null в случае ошибки</returns>
+        /// <returns>Созданный эскиз</returns>
+        /// <exception cref="FacetedGlassException">При ошибке
+        /// создания эскиза</exception>
         public ksEntity CreateSketch(short planeType)
         {
             try
             {
                 var plane = (ksEntity)_part.GetDefaultEntity(planeType);
+                if (plane == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        $"Не удалось получить плоскость типа {planeType}");
+                }
+
                 var sketch = (ksEntity)_part.NewEntity
                     ((short)Obj3dType.o3d_sketch);
+                if (sketch == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось создать эскиз");
+                }
+
                 var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
                 sketchDef.SetPlane(plane);
                 sketch.Create();
@@ -142,7 +159,9 @@ namespace Builder
             }
             catch
             {
-                return null;
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    $"Ошибка при создании эскиза на плоскости {planeType}");
             }
         }
 
@@ -151,7 +170,9 @@ namespace Builder
         /// </summary>
         /// <param name="basePlaneType">Базовый тип плоскости</param>
         /// <param name="offset">Смещение плоскости от базовой</param>
-        /// <returns>Созданный эскиз или null в случае ошибки</returns>
+        /// <returns>Созданный эскиз</returns>
+        /// <exception cref="FacetedGlassException">При ошибке создания
+        /// эскиза</exception>
         public ksEntity CreateSketchOnOffsetPlane(short basePlaneType,
             double offset)
         {
@@ -159,9 +180,23 @@ namespace Builder
             {
                 var basePlane = (ksEntity)_part.GetDefaultEntity
                     (basePlaneType);
+                if (basePlane == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                            $"Не удалось получить базовую плоскость типа" +
+                                $" {basePlaneType}");
+                }
 
                 var offsetPlane = (ksEntity)_part.NewEntity
                     ((short)Obj3dType.o3d_planeOffset);
+                if (offsetPlane == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось создать смещенную плоскость");
+                }
+
                 var offsetDef = (ksPlaneOffsetDefinition)offsetPlane.
                     GetDefinition();
                 offsetDef.SetPlane(basePlane);
@@ -171,6 +206,13 @@ namespace Builder
 
                 var sketch = (ksEntity)_part.NewEntity
                     ((short)Obj3dType.o3d_sketch);
+                if (sketch == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось создать эскиз на смещенной плоскости");
+                }
+
                 var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
                 sketchDef.SetPlane(offsetPlane);
                 sketch.Create();
@@ -178,7 +220,10 @@ namespace Builder
             }
             catch
             {
-                return null;
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    $"Ошибка при создании эскиза на смещенной плоскости " +
+                    $"(offset={offset})");
             }
         }
 
@@ -187,28 +232,71 @@ namespace Builder
         /// </summary>
         /// <param name="sketch">Эскиз для редактирования</param>
         /// <returns>2D-документ для редактирования эскиза</returns>
+        /// <exception cref="FacetedGlassException">При ошибке начала 
+        /// редактирования</exception>
         public ksDocument2D BeginSketchEdit(ksEntity sketch)
         {
+            if (sketch == null)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Эскиз не может быть null");
+            }
             try
             {
                 var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
-                return sketchDef.BeginEdit();
+                if (sketchDef == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось получить определение эскиза");
+                }
+
+                var doc2D = sketchDef.BeginEdit();
+                if (doc2D == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось начать редактирование эскиза");
+                }
+
+                return doc2D;
             }
             catch
             {
-                return null;
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Ошибка при начале редактирования эскиза");
             }
         }
 
         /// <summary>
         /// Завершает редактирование эскиза
         /// </summary>
-        /// <param name="sketch">Эскиз, редактирование 
-        /// которого завершается</param>
+        /// <param name="sketch">Эскиз, редактирование которого завершается
+        /// </param>
+        /// <exception cref="FacetedGlassException">При ошибке завершения
+        /// редактирования</exception>
         public void EndSketchEdit(ksEntity sketch)
         {
-            var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
-            sketchDef.EndEdit();
+            if (sketch == null)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Эскиз не может быть null");
+            }
+
+            try
+            {
+                var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
+                sketchDef?.EndEdit();
+            }
+            catch
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Ошибка при завершении редактирования эскиза");
+            }
         }
 
         /// <summary>
@@ -219,35 +307,84 @@ namespace Builder
         /// <param name="centerY">Координата Y центра окружности</param>
         /// <param name="radius">Радиус окружности</param>
         /// <param name="style">Стиль линии</param>
+        /// <exception cref="FacetedGlassException">При ошибке рисования
+        /// окружности</exception>
         public void DrawCircle(ksDocument2D doc2D, double centerX,
             double centerY, double radius, int style = 1)
         {
-            doc2D.ksCircle(centerX, centerY, radius, style);
+            if (doc2D == null)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "2D-документ не может быть null");
+            }
+
+            if (radius <= 0)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.InvalidGlassParameters,
+                    $"Радиус должен быть положительным. Получено: {radius}");
+            }
+
+            try
+            {
+                doc2D.ksCircle(centerX, centerY, radius, style);
+            }
+            catch
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                        $"Ошибка при рисовании окружности (центр=({centerX}," +
+                            $"{centerY}), радиус={radius})");
+            }
         }
 
         /// <summary>
         /// Создает операцию выдавливания
         /// </summary>
         /// <param name="sketch">Эскиз для выдавливания</param>
-        /// <param name="direction">Направление выдавливания 
-        /// (true - прямое)</param>
+        /// <param name="direction">Направление выдавливания (true - прямое)
+        /// </param>
         /// <param name="depth">Глубина выдавливания</param>
         /// <param name="name">Имя операции</param>
-        /// <returns>Созданная операция выдавливания или 
-        /// null в случае ошибки</returns>
+        /// <returns>Созданная операция выдавливания</returns>
+        /// <exception cref="FacetedGlassException">При ошибке создания 
+        /// операции</exception>
         public ksEntity CreateExtrusion(ksEntity sketch, bool direction,
             double depth, string name = "")
         {
+            if (sketch == null)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Эскиз не может быть null");
+            }
+
+            if (depth <= 0)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.InvalidGlassParameters,
+                        $"Глубина выдавливания должна быть положительной." +
+                            $" Получено: {depth}");
+            }
+
             try
             {
                 var extrude = (ksEntity)_part.NewEntity
                     ((short)Obj3dType.o3d_baseExtrusion);
+                if (extrude == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось создать операцию выдавливания");
+                }
+
                 var extrudeDef = (ksBaseExtrusionDefinition)extrude.
                     GetDefinition();
                 extrudeDef.directionType = (short)Direction_Type.dtNormal;
                 extrudeDef.SetSketch(sketch);
-                extrudeDef.SetSideParam(direction,
-                    (short)End_Type.etBlind, depth, 0, false);
+                extrudeDef.SetSideParam(direction, (short)End_Type.etBlind,
+                    depth, 0, false);
                 extrudeDef.SetThinParam(false, 0, 0, 0);
                 extrude.Create();
 
@@ -260,7 +397,9 @@ namespace Builder
             }
             catch
             {
-                return null;
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    $"Ошибка при создании выдавливания (глубина={depth})");
             }
         }
 
@@ -268,28 +407,47 @@ namespace Builder
         /// Создает операцию вырезания выдавливанием
         /// </summary>
         /// <param name="sketch">Эскиз для вырезания</param>
-        /// <param name="direction">Направление вырезания 
-        /// (true - прямое)</param>
+        /// <param name="direction">Направление вырезания (true - прямое)
+        /// </param>
         /// <param name="depth">Глубина вырезания</param>
         /// <param name="name">Имя операции</param>
-        /// <returns>Созданная операция вырезания или 
-        /// null в случае ошибки</returns>
+        /// <returns>Созданная операция вырезания</returns>
+        /// <exception cref="FacetedGlassException">При ошибке создания
+        /// операции</exception>
         public ksEntity CreateCutExtrusion(ksEntity sketch, bool direction,
             double depth, string name = "")
         {
+            if (sketch == null)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Эскиз не может быть null");
+            }
+            if (depth <= 0)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.InvalidGlassParameters,
+                        $"Глубина вырезания должна быть положительной." +
+                            $" Получено: {depth}");
+            }
             try
             {
                 var cut = (ksEntity)_part.NewEntity
                     ((short)Obj3dType.o3d_cutExtrusion);
-                var cutDef = (ksCutExtrusionDefinition)cut.GetDefinition();
+                if (cut == null)
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось создать операцию вырезания");
+                }
 
+                var cutDef = (ksCutExtrusionDefinition)cut.GetDefinition();
                 cutDef.directionType = (short)Direction_Type.dtNormal;
                 cutDef.SetSketch(sketch);
-                cutDef.SetSideParam(direction,
-                    (short)End_Type.etBlind, depth, 0, false);
+                cutDef.SetSideParam(direction, (short)End_Type.etBlind,
+                    depth, 0, false);
                 cutDef.SetThinParam(false, 0, 0, 0);
                 cut.Create();
-
                 if (!string.IsNullOrEmpty(name))
                 {
                     dynamic cutDynamic = cut;
@@ -299,7 +457,9 @@ namespace Builder
             }
             catch
             {
-                return null;
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    $"Ошибка при создании вырезания (глубина={depth})");
             }
         }
 
@@ -345,10 +505,12 @@ namespace Builder
                 }
                 return true;
             }
-            //TODO: refactor
-            catch (Exception ex)
+            //TODO: refactor +
+            catch
             {
-                throw new ArgumentException($"Ошибка: {ex.Message}");
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    $"Ошибка при создании цилиндра '{name}'");
             }
         }
 
@@ -398,10 +560,12 @@ namespace Builder
                 }
                 return true;
             }
-            //TODO: refactor
-            catch (Exception ex)
+            //TODO: refactor +
+            catch
             {
-                throw new ArgumentException($"Ошибка: {ex.Message}");
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    $"Ошибка при создании внутренней полости '{name}'");
             }
         }
 
@@ -460,10 +624,12 @@ namespace Builder
                 }
                 return true;
             }
-            //TODO: refactor
-            catch (Exception ex)
+            //TODO: refactor +
+            catch
             {
-                throw new ArgumentException($"Ошибка: {ex.Message}");
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Ошибка при создании полого стакана");
             }
         }
 
@@ -497,47 +663,48 @@ namespace Builder
                 double thicknessLowerEdge, double thicknessUpperEdge,
                     double heightUpperEdge, int numberOfEdges)
         {
-            try
+            double internalRadiusUpper = externalRadius -
+                thicknessUpperEdge - thicknessLowerEdge;
+            if (internalRadiusUpper <= 0)
             {
-                double internalRadiusUpper = externalRadius -
-                    thicknessUpperEdge - thicknessLowerEdge;
-                if (internalRadiusUpper <= 0)
-                {
-                    throw new ArgumentException($"Внутренний радиус верхнего"+
-                        $" цилиндра отрицательный: {internalRadiusUpper} мм");
-                }
-
-                double externalRadiusLower = externalRadius -
-                    thicknessUpperEdge;
-                double internalRadiusLower = externalRadiusLower -
-                    thicknessLowerEdge;
-                if (internalRadiusLower <= 0)
-                {
-                    throw new ArgumentException($"Внутренний радиус нижнего "+
-                        $"цилиндра отрицательный: {internalRadiusLower} мм");
-                }
-
-                double heightMiddle = heightTotal - heightBottom -
-                    heightUpperEdge;
-                if (heightMiddle <= 0)
-                {
-                    throw new ArgumentException($"Средняя часть стакана " +
-                        $"имеет отрицательную высоту: {heightMiddle} мм");
-                }
-
-                bool glassSuccess = CreateHollowGlass(externalRadiusLower,
-                    externalRadius, internalRadiusLower, internalRadiusUpper,
-                    heightBottom, heightMiddle, heightUpperEdge);
-
-                if (!glassSuccess)
-                {
-                    throw new Exception("Не удалось создать полый стакан");
-                }
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.InvalidGlassParameters,
+                    "internalRadiusUpper",
+                    internalRadiusUpper);
             }
-            //TODO: refactor
-            catch (Exception ex)
+
+            double externalRadiusLower = externalRadius -
+                thicknessUpperEdge;
+            double internalRadiusLower = externalRadiusLower -
+                thicknessLowerEdge;
+            if (internalRadiusLower <= 0)
             {
-                throw new ArgumentException($"Ошибка: {ex.Message}");
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.InvalidGlassParameters,
+                    "internalRadiusLower",
+                    internalRadiusLower);
+            }
+
+            double heightMiddle = heightTotal - heightBottom -
+                heightUpperEdge;
+            if (heightMiddle <= 0)
+            {
+                throw FacetedGlassException.Create(
+                    FacetedGlassExceptionType.InvalidGlassParameters,
+                    "heightMiddle",
+                    heightMiddle);
+            }
+
+            //TODO: refactor +
+            bool glassSuccess = CreateHollowGlass(externalRadiusLower,
+                externalRadius, internalRadiusLower, internalRadiusUpper,
+                heightBottom, heightMiddle, heightUpperEdge);
+
+            if (!glassSuccess)
+            {
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Не удалось создать полый стакан");
             }
         }
 
@@ -585,10 +752,12 @@ namespace Builder
 
                 return offsetPlane;
             }
-            //TODO: refactor
-            catch (Exception ex)
+            //TODO: refactor +
+            catch
             {
-                throw new ArgumentException($"Ошибка: {ex.Message}");
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.TangentPlaneCreationFailed,
+                    "Ошибка при создании касательной плоскости");
             }
         }
 
@@ -619,8 +788,9 @@ namespace Builder
                 var doc2D = BeginSketchEdit(sketch);
                 if (doc2D == null)
                 {
-                    throw new ArgumentException
-                        ($"Не удалось начать редактирование!");
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось начать редактирование эскиза!");
                 }
 
                 double halfWidth = 10;
@@ -645,10 +815,12 @@ namespace Builder
                 EndSketchEdit(sketch);
                 return sketch;
             }
-            //TODO: refactor
-            catch (Exception ex)
+            //TODO: refactor +
+            catch
             {
-                throw new ArgumentException($"Ошибка: {ex.Message}");
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Ошибка при создании прямоугольного эскиза");
             }
         }
 
@@ -712,10 +884,12 @@ namespace Builder
                 }
                 return true;
             }
-            //TODO: refactor
-            catch (Exception ex)
+            //TODO: refactor +
+            catch
             {
-                throw new ArgumentException($"Ошибка: {ex.Message}");
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.CircularArrayCreationFailed,
+                    "Ошибка при создании кругового массива");
             }
         }
 
@@ -723,7 +897,7 @@ namespace Builder
         /// Создаёт эскиз со скруглёнными углами (овальная форма)
         /// </summary>
         public ksEntity CreateRoundedRectangleOnTangentPlane
-            (ksEntity tangentPlane,double rectangleHeight, 
+            (ksEntity tangentPlane, double rectangleHeight,
             double heightBottom, double baseOffset = 0)
         {
             try
@@ -736,8 +910,11 @@ namespace Builder
 
                 var doc2D = BeginSketchEdit(sketch);
                 if (doc2D == null)
-                    throw new ArgumentException("Не удалось" +
-                        " начать редактирование!");
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось начать редактирование эскиза!");
+                }
 
                 double halfWidth = 8;
                 double radius = 8;
@@ -771,11 +948,12 @@ namespace Builder
                 EndSketchEdit(sketch);
                 return sketch;
             }
-            //TODO: refactor
-            catch (Exception ex)
+            //TODO: refactor +
+            catch
             {
-                throw new ArgumentException($"Ошибка при создании" +
-                    $" овальной грани: {ex.Message}");
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Ошибка при создании овальной грани");
             }
         }
 
@@ -796,32 +974,35 @@ namespace Builder
 
                 var doc2D = BeginSketchEdit(sketch);
                 if (doc2D == null)
-                    throw new ArgumentException("Не удалось " +
-                        "начать редактирование!");
+                {
+                    throw new FacetedGlassException(
+                        FacetedGlassExceptionType.PartCreationFailed,
+                        "Не удалось начать редактирование эскиза!");
+                }
 
-                double bottomWidth = 16;   
+                double bottomWidth = 16;
                 double topWidth = 10;
                 double yStart = heightBottom;
                 double yEnd = baseOffset + rectangleHeight + heightBottom;
 
                 doc2D.ksLineSeg(-bottomWidth / 2, yStart,
-                    bottomWidth / 2, yStart, 1);   
+                    bottomWidth / 2, yStart, 1);
                 doc2D.ksLineSeg(bottomWidth / 2, yStart,
-                    topWidth / 2, yEnd, 1);    
+                    topWidth / 2, yEnd, 1);
                 doc2D.ksLineSeg
-                    (topWidth / 2, yEnd, -topWidth / 2, yEnd, 1);        
+                    (topWidth / 2, yEnd, -topWidth / 2, yEnd, 1);
                 doc2D.ksLineSeg(-topWidth / 2, yEnd,
-                    -bottomWidth / 2, yStart, 1); 
+                    -bottomWidth / 2, yStart, 1);
 
                 EndSketchEdit(sketch);
                 return sketch;
             }
-            //TODO: refactor
-            catch (Exception ex)
+            //TODO: refactor +
+            catch
             {
-                throw new ArgumentException
-                    ($"Ошибка создания трапециевидного" +
-                        $" эскиза: {ex.Message}");
+                throw new FacetedGlassException(
+                    FacetedGlassExceptionType.PartCreationFailed,
+                    "Ошибка создания трапециевидного эскиза");
             }
         }
     }

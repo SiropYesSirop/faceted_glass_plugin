@@ -65,54 +65,54 @@ namespace GlassPlugin
         {
             switch (exceptionType)
             {
-                //TODO: отступ
+                //TODO: отступ +
                 case FacetedGlassExceptionType.HeightTotalInvalid:
-                    {
-                        return $"Общая высота должна быть положительной" +
-                        $" (значение: {parameterValue})";
-                    }
+                {
+                    return $"Общая высота должна быть положительной" +
+                    $" (значение: {parameterValue})";
+                }
                 case FacetedGlassExceptionType.RadiusInvalid:
-                    {
-                        return $"Радиус должен быть положительным" +
-                            $" (значение: {parameterValue})";
-                    }
+                {
+                    return $"Радиус должен быть положительным" +
+                        $" (значение: {parameterValue})";
+                }
 
                 case FacetedGlassExceptionType.HeightBottomInvalid:
-                    {
-                        return $"Высота дна должна быть положительной" +
-                            $" (значение: {parameterValue})";
-                    }
+                {
+                    return $"Высота дна должна быть положительной" +
+                        $" (значение: {parameterValue})";
+                }
                 case FacetedGlassExceptionType.ThicknessLowerEdgeInvalid:
-                    {
-                        return $"Толщина нижней стенки должна быть" +
-                            $" положительной и меньше внешнего радиуса" +
-                                $" (значение: {parameterValue})";
-                    }
+                {
+                    return $"Толщина нижней стенки должна быть" +
+                        $" положительной и меньше внешнего радиуса" +
+                            $" (значение: {parameterValue})";
+                }
                 case FacetedGlassExceptionType.ThicknessUpperEdgeInvalid:
-                    {
-                        return $"Толщина верхней стенки должна быть" +
-                            $" положительной и меньше внешнего радиуса" +
-                                $" (значение: {parameterValue})";
-                    }
+                {
+                    return $"Толщина верхней стенки должна быть" +
+                        $" положительной и меньше внешнего радиуса" +
+                            $" (значение: {parameterValue})";
+                }
                 case FacetedGlassExceptionType.HeightUpperEdgeInvalid:
-                    {
-                        return $"Высота верхней стенки должна быть" +
-                            $" положительной (значение: {parameterValue})";
-                    }
+                {
+                    return $"Высота верхней стенки должна быть" +
+                        $" положительной (значение: {parameterValue})";
+                }
                 case FacetedGlassExceptionType.NumberOfEdgesInvalid:
-                    {
-                        return $"Количество граней должно быть от 8 до" +
-                            $" 11 (значение: {parameterValue})";
-                    }
+                {
+                    return $"Количество граней должно быть от 8 до" +
+                        $" 11 (значение: {parameterValue})";
+                }
                 case FacetedGlassExceptionType.KompasConnectionFailed:
-                    {
-                        return "Не удалось подключиться к КОМПАС-3D";
-                    }
+                {
+                    return "Не удалось подключиться к КОМПАС-3D";
+                }
                 default:
-                    {
-                        return "Произошла ошибка при построении " +
-                            "гранёного стакана";
-                    }
+                {
+                    return "Произошла ошибка при построении " +
+                        "гранёного стакана";
+                }
             }
         }
     }

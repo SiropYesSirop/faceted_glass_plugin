@@ -251,7 +251,6 @@
             this.textBoxNumberOfEdge.Name = "textBoxNumberOfEdge";
             this.textBoxNumberOfEdge.Size = new System.Drawing.Size(110, 20);
             this.textBoxNumberOfEdge.TabIndex = 8;
-            this.textBoxNumberOfEdge.TextChanged += new System.EventHandler(this.textBoxNumberOfEdge_Leave);
             // 
             // textBoxHeightUpperEdge
             // 
@@ -259,7 +258,6 @@
             this.textBoxHeightUpperEdge.Name = "textBoxHeightUpperEdge";
             this.textBoxHeightUpperEdge.Size = new System.Drawing.Size(110, 20);
             this.textBoxHeightUpperEdge.TabIndex = 7;
-            this.textBoxHeightUpperEdge.TextChanged += new System.EventHandler(this.textBoxHeightUpperEdge_Leave);
             // 
             // textBoxThicknessUpperEdge
             // 
@@ -267,7 +265,6 @@
             this.textBoxThicknessUpperEdge.Name = "textBoxThicknessUpperEdge";
             this.textBoxThicknessUpperEdge.Size = new System.Drawing.Size(110, 20);
             this.textBoxThicknessUpperEdge.TabIndex = 6;
-            this.textBoxThicknessUpperEdge.TextChanged += new System.EventHandler(this.textBoxThicknessUpperEdge_Leave);
             // 
             // textBoxThicknessLowerEdge
             // 
@@ -275,7 +272,6 @@
             this.textBoxThicknessLowerEdge.Name = "textBoxThicknessLowerEdge";
             this.textBoxThicknessLowerEdge.Size = new System.Drawing.Size(110, 20);
             this.textBoxThicknessLowerEdge.TabIndex = 5;
-            this.textBoxThicknessLowerEdge.TextChanged += new System.EventHandler(this.textBoxThicknessLowerEdge_Leave);
             // 
             // textBoxHeightBottom
             // 
@@ -283,7 +279,6 @@
             this.textBoxHeightBottom.Name = "textBoxHeightBottom";
             this.textBoxHeightBottom.Size = new System.Drawing.Size(110, 20);
             this.textBoxHeightBottom.TabIndex = 4;
-            this.textBoxHeightBottom.TextChanged += new System.EventHandler(this.textBoxHeightBottom_Leave);
             // 
             // textBoxRadius
             // 
@@ -291,7 +286,6 @@
             this.textBoxRadius.Name = "textBoxRadius";
             this.textBoxRadius.Size = new System.Drawing.Size(110, 20);
             this.textBoxRadius.TabIndex = 3;
-            this.textBoxRadius.TextChanged += new System.EventHandler(this.textBoxRadius_Leave);
             // 
             // textBoxHeightTotal
             // 
@@ -299,8 +293,6 @@
             this.textBoxHeightTotal.Name = "textBoxHeightTotal";
             this.textBoxHeightTotal.Size = new System.Drawing.Size(110, 20);
             this.textBoxHeightTotal.TabIndex = 2;
-            this.textBoxHeightTotal.TextChanged += new System.EventHandler(this.textBoxHeightTotal_Leave);
-            // 
             // labelRadius
             // 
             this.labelRadius.AutoSize = true;

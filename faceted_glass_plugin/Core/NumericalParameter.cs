@@ -5,9 +5,20 @@
 /// </summary>
 public class NumericalParameter
 {
-    //TODO: XML
+    //TODO: XML +
+    /// <summary>
+    /// Минимальное допустимое значение параметра
+    /// </summary>
     private double _minValue;
+
+    /// <summary>
+    /// Максимальное допустимое значение параметра
+    /// </summary>
     private double _maxValue;
+
+    /// <summary>
+    /// Текущее значение параметра
+    /// </summary>
     private double _value;
 
     /// <summary>

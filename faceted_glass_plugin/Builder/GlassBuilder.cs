@@ -79,38 +79,38 @@ namespace GlassPlugin
 
                 switch (parameters.EdgeType)
                 {
-                    //TODO: отступ
+                    //TODO: отступ +
                     case EdgeType.Oval:
-                        {
-                            edgeSketch = _wrapper.
-                                CreateRoundedRectangleOnTangentPlane
-                                (tangentPlane,heightTotal - 
+                    {
+                        edgeSketch = _wrapper.
+                            CreateRoundedRectangleOnTangentPlane
+                            (tangentPlane,heightTotal - 
+                                heightBottom - heightUpperEdge,
+                                    heightBottom, 0);
+                        edgeName = "ОвальнаяГрань";
+                        break;
+                    }
+                    case EdgeType.Trapezoidal:
+                    {
+                        edgeSketch = _wrapper.
+                            CreateTrapezoidalOnTangentPlane(tangentPlane,
+                                heightTotal - 
                                     heightBottom - heightUpperEdge,
                                         heightBottom, 0);
-                            edgeName = "ОвальнаяГрань";
-                            break;
-                        }
-                    case EdgeType.Trapezoidal:
-                        {
-                            edgeSketch = _wrapper.
-                                CreateTrapezoidalOnTangentPlane(tangentPlane,
-                                    heightTotal - 
-                                        heightBottom - heightUpperEdge,
-                                            heightBottom, 0);
-                            edgeName = "ТрапециевиднаяГрань";
-                            break;
-                        }
+                        edgeName = "ТрапециевиднаяГрань";
+                        break;
+                    }
                     case EdgeType.Rectangular:
                     default:
-                        {
-                            edgeSketch = _wrapper.
-                                CreateRectangleOnTangentPlane(tangentPlane,
-                                    heightTotal - 
-                                        heightBottom - heightUpperEdge,
-                                            heightBottom, 0);
-                            edgeName = "ПрямоугольнаяГрань";
-                            break;
-                        }
+                    {
+                        edgeSketch = _wrapper.
+                            CreateRectangleOnTangentPlane(tangentPlane,
+                                heightTotal - 
+                                    heightBottom - heightUpperEdge,
+                                        heightBottom, 0);
+                        edgeName = "ПрямоугольнаяГрань";
+                        break;
+                    }
                 }
                 if (edgeSketch == null)
                 {
