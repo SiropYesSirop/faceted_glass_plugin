@@ -505,7 +505,6 @@ namespace Builder
                 }
                 return true;
             }
-            //TODO: refactor +
             catch
             {
                 throw new FacetedGlassException(
@@ -560,7 +559,6 @@ namespace Builder
                 }
                 return true;
             }
-            //TODO: refactor +
             catch
             {
                 throw new FacetedGlassException(
@@ -624,7 +622,6 @@ namespace Builder
                 }
                 return true;
             }
-            //TODO: refactor +
             catch
             {
                 throw new FacetedGlassException(
@@ -695,7 +692,6 @@ namespace Builder
                     heightMiddle);
             }
 
-            //TODO: refactor +
             bool glassSuccess = CreateHollowGlass(externalRadiusLower,
                 externalRadius, internalRadiusLower, internalRadiusUpper,
                 heightBottom, heightMiddle, heightUpperEdge);
@@ -752,7 +748,6 @@ namespace Builder
 
                 return offsetPlane;
             }
-            //TODO: refactor +
             catch
             {
                 throw new FacetedGlassException(
@@ -815,7 +810,6 @@ namespace Builder
                 EndSketchEdit(sketch);
                 return sketch;
             }
-            //TODO: refactor +
             catch
             {
                 throw new FacetedGlassException(
@@ -884,7 +878,6 @@ namespace Builder
                 }
                 return true;
             }
-            //TODO: refactor +
             catch
             {
                 throw new FacetedGlassException(
@@ -948,7 +941,6 @@ namespace Builder
                 EndSketchEdit(sketch);
                 return sketch;
             }
-            //TODO: refactor +
             catch
             {
                 throw new FacetedGlassException(
@@ -997,7 +989,6 @@ namespace Builder
                 EndSketchEdit(sketch);
                 return sketch;
             }
-            //TODO: refactor +
             catch
             {
                 throw new FacetedGlassException(

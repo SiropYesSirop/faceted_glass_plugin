@@ -5,7 +5,6 @@
 /// </summary>
 public class NumericalParameter
 {
-    //TODO: XML +
     /// <summary>
     /// Минимальное допустимое значение параметра
     /// </summary>

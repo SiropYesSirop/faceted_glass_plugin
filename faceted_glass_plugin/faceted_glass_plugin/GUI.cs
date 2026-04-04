@@ -117,7 +117,6 @@ namespace faceted_glass_plugin
         {
             switch (_parameters.EdgeType)
             {
-                //TODO: Отступ +
                 case EdgeType.Rectangular:
                 {
                     comboBoxEdgeType.SelectedIndex = 0;
@@ -318,7 +317,6 @@ namespace faceted_glass_plugin
         {
             switch (exceptionType)
             {
-                //TODO: Отступ +
                 case FacetedGlassExceptionType.HeightTotalInvalid:
                 {
                     return "Общая высота должна быть в" +
@@ -374,7 +372,6 @@ namespace faceted_glass_plugin
         {
             switch (paramType)
             {
-                //TODO: Отступ +
                 case ParameterType.HeightTotal:
                 {
                     return "Общая высота";
@@ -645,7 +642,6 @@ namespace faceted_glass_plugin
         {
             switch (ex.ExceptionType)
             {
-                //TODO: Отступ +
                 case FacetedGlassExceptionType.KompasConnectionFailed:
                 {
                     return "Не удалось подключиться к КОМПАС-3D." +
@@ -685,7 +681,6 @@ namespace faceted_glass_plugin
         {
             switch (comboBoxEdgeType.SelectedIndex)
             {
-                //TODO: Отступ +
                 case 0:
                 {
                     _parameters.EdgeType = EdgeType.Rectangular;
